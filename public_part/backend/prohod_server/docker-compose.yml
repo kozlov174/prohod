@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:latest
+    container_name: db-prohod
+    restart: always
+    environment:
+      POSTGRES_DB: rtf.prohod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432" # Экспонирует порт PostgreSQL на хост-машину
+    networks:
+      - app-network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8079:8079" # Экспонирует порт приложения на хост-машину
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

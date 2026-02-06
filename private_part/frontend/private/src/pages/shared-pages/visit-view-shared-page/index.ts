@@ -1,0 +1,1 @@
+export { default as VisitViewSharedPage } from './visit-view-shared-page'

@@ -1,0 +1,71 @@
+@import url(stylesheet.css);
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../assets/fonts/Gilroy-Regular.ttf");
+  src: url("../assets/fonts/Gilroy-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../assets/fonts/Gilroy-Regular.woff") format("woff"),
+    url("../assets/fonts/Gilroy-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+}
+
+* {
+  font-family: Gilroy;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  background-color: #121629 !important;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+body {
+  background-color: #121629;
+  height: 100vh;
+}
+
+textarea {
+  background-color: #b7bacb;
+  color: white;
+  border: none;
+  font-size: 20px;
+  width: 100%;
+  border-radius: 24px;
+  padding: 24px;
+  resize: vertical;
+  color-scheme: dark;
+}
+
+input {
+  background-color: #b7bacb;
+  color: white;
+  border: none;
+  font-size: 20px;
+  height: 60px;
+  width: 100%;
+  border-radius: 24px;
+  color-scheme: dark;
+
+  &[type="checkbox"] {
+    height: 24px;
+    width: 24px;
+    color-scheme: light;
+  }
+
+  &[type="date"] {
+    padding-right: 24px;
+  }
+
+  &[type="time"] {
+    padding-right: 24px;
+  }
+}

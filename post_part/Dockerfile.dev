@@ -1,0 +1,19 @@
+# Dockerfile для разработки
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Копируем package.json
+COPY package*.json ./
+
+# Устанавливаем все зависимости с флагом --legacy-peer-deps для решения конфликтов
+RUN npm install --legacy-peer-deps
+
+# Копируем исходный код
+COPY . .
+
+# Экспонируем порт для разработки
+EXPOSE 3000
+
+# Запускаем в режиме разработки
+CMD ["npm", "run", "dev"]

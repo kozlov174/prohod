@@ -1,0 +1,49 @@
+﻿---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Install snap
+      apt:
+        name: snapd
+        state: present
+    - name: Install microk8s
+      command: snap install microk8s --classic
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+    - name: Install Docker Python module
+      pip:
+        name: docker
+        state: present
+    - name: Run PostgreSQL container
+      docker_container:
+        name: database
+        image: bitnami/postgresql
+        state: started
+        env:
+          POSTGRESQL_DATABASE: prohod
+          POSTGRESQL_PASSWORD: admin123
+          POSTGRESQL_POSTGRES_PASSWORD: admin123
+        published_ports:
+          - "5432:5432"
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/kozlov174/prohod-last-version.git'
+        dest: /home/admin/prohod
+    - name: Apply backend deployment
+      command: microk8s kubectl apply -f dest: /home/admin/prohod/backend-deploy.yaml
+    - name: Expose backend deployment
+      command: microk8s kubectl expose deployment prohod-server --port=443 --target-port=80 --name=prohod-balancer-backend --type=LoadBalancer
+    - name: Apply frontend deployment
+      command: microk8s kubectl apply -f dest: /home/admin/prohod/frontend-deploy.yaml
+    - name: Expose frontend deployment
+      command: microk8s kubectl expose deployment prohod-frontend --port=443 --target-port=4000 --name=prohod-balancer --type=LoadBalancer
+    - name: Enable observability
+      command: microk8s enable observability
+    - name: Expose Grafana deployment
+      command: microk8s kubectl expose deployment kube-prom-stack-grafana --port=80 --target-port=3000 --name=example-service --type=LoadBalancer -n observability
+    - name: Get all resources
+      command: microk8s kubectl get all
+    - name: Get all resources in observability namespace
+      command: microk8s kubectl get all -n observability

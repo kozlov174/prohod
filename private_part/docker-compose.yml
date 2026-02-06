@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  databasePrivate:
+    image: bitnami/postgresql
+    container_name: databasePrivate
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - app-net
+
+
+  backend-private:
+    container_name: server-private
+    build:
+      context: backend-private/prohod_server/
+      dockerfile: Dockerfile
+    ports:
+      - "8078:8078"
+      - "587:587"
+    restart: always
+    networks:
+      - app-net
+    env_file:
+      - .env
+
+  frontend-private:
+    container_name: frontend-private
+    build:
+      context: frontend/private/
+      dockerfile: Dockerfile
+    ports:
+      - "80:5174"
+    restart: always
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  db_data:

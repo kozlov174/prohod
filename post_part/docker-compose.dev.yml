@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  qr-ticket-app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      # Монтируем код для hot reload
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - qr-ticket-dev-network
+    restart: unless-stopped
+    depends_on:
+      - postgres-dev
+
+  postgres-dev:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: qr_tickets_dev
+      POSTGRES_USER: qr_user
+      POSTGRES_PASSWORD: qr_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - qr-ticket-dev-network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  qr-ticket-dev-network:
+    driver: bridge

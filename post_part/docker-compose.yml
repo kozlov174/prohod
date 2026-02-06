@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  qr-ticket-app:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+    volumes:
+      # Монтируем volume для логов (опционально)
+      - ./logs:/app/logs
+    networks:
+      - qr-ticket-network
+
+
+networks:
+  qr-ticket-network:
+    driver: bridge

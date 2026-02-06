@@ -1,0 +1,19 @@
+version: "3"
+services:
+  backend-public:
+    container_name: server-public
+    build:
+      context: backend/prohod_server/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8079:8079"
+
+  frontend-public:
+    container_name: frontend-public
+    build:
+      context: frontend/public/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5173:5173"

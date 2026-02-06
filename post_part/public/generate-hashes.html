@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор хэшей паролей</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .password-item { margin: 10px 0; padding: 10px; background: white; border-radius: 4px; }
+        .hash { font-family: monospace; word-break: break-all; background: #e8e8e8; padding: 5px; margin: 5px 0; }
+        .sql { background: #e8f4fd; padding: 10px; border-left: 4px solid #2196F3; margin: 10px 0; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Генератор хэшей паролей</h1>
+    
+    <div class="container">
+        <h3>Пароли для хэширования:</h3>
+        <div class="password-item">post@example.com: <strong>password</strong></div>
+        <div class="password-item">security@example.com: <strong>123456</strong></div>
+        <div class="password-item">admin@example.com: <strong>admin123</strong></div>
+        <div class="password-item">user@example.com: <strong>user123</strong></div>
+    </div>
+
+    <button onclick="generateHashes()">Сгенерировать хэши</button>
+
+    <div id="result"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+    <script>
+        async function generateHashes() {
+            const passwords = {
+                "post@example.com": "password",
+                "security@example.com": "123456",
+                "admin@example.com": "admin123", 
+                "user@example.com": "user123"
+            };
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>⏳ Генерация хэшей...</p>';
+
+            try {
+                let html = '<div class="container"><h3>✅ Сгенерированные хэши:</h3>';
+                let sqlCommands = [];
+
+                for (const [email, password] of Object.entries(passwords)) {
+                    const hash = await bcrypt.hash(password, 12);
+                    html += `
+                        <div class="password-item">
+                            <strong>${email}</strong><br>
+                            Пароль: <code>${password}</code><br>
+                            Хэш: <div class="hash">${hash}</div>
+                        </div>
+                    `;
+                    sqlCommands.push(`UPDATE accounts SET password_hash = '${hash}' WHERE login = '${email}';`);
+                }
+
+                html += '</div>';
+                html += '<div class="container"><h3>📝 SQL команды для обновления:</h3>';
+                html += '<div class="sql">';
+                sqlCommands.forEach(sql => {
+                    html += sql + '<br>';
+                });
+                html += '</div>';
+                html += '<p><strong>💡 Инструкция:</strong></p>';
+                html += '<ol>';
+                html += '<li>Скопируйте SQL команды выше</li>';
+                html += '<li>Подключитесь к PostgreSQL: <code>docker-compose exec postgres psql -U qr_user -d qr_tickets</code></li>';
+                html += '<li>Вставьте и выполните SQL команды</li>';
+                html += '<li>Проверьте результат: <code>SELECT login, LEFT(password_hash, 20) || \'...\' FROM accounts;</code></li>';
+                html += '</ol>';
+                html += '</div>';
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">❌ Ошибка: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
