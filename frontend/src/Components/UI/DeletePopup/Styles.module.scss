@@ -1,0 +1,28 @@
+.container {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 14px;
+  max-width: 528px;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__text {
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    color: var(--blue-color);
+  }
+
+  &__buttons {
+    display: flex;
+    column-gap: 36px;
+    justify-content: center;
+  }
+}

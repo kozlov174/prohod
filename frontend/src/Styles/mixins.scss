@@ -1,0 +1,65 @@
+//text
+
+@mixin text_h2 {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 120%;
+  vertical-align: middle;
+}
+
+@mixin text_h3 {
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 120%;
+  vertical-align: middle;
+}
+
+@mixin text_subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+@mixin text_body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+@mixin text_body_2 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+@mixin text_descriptor {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 140%;
+}
+
+@mixin text_descriptor_2 {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+@mixin text_table_header {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 120%;
+  color: var(--blue-color);
+}
+
+@mixin text_table_text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+@mixin text_input {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: 0;
+}

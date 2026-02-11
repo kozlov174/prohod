@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  transition: background-color 0.3s ease-out;
+}
+
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+nav,
+footer,
+header,
+aside {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 18px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  letter-spacing: 0;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h3, h4, h5, h6 {
+  @include text_subtitle();
+}
+
+h2 {
+  @include text_h2();
+  color: var(--blue-color);
+}
+
+h3 {
+  @include text_h3();
+  color: var(--blue-color);
+}
+
+
+p {
+  @include text_body();
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Montserrat';
+  font-weight: 400;
+}
+
+input[type="time"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.error {
+  color: red
+}
+
+.scroll {
+  overflow: auto;
+  scrollbar-width: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+  &:hover::-webkit-scrollbar {
+    width: 4px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: #c2c2d6;
+  }
+}
+
+.circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--blue-color);
+  margin-right: 8px;
+  &_disabled {
+    background-color: var(--black-3-color);
+  }
+  &_active {
+    background-color: var(--blue-color);
+  }
+}
+
+.popup {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+  & form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px
+  }
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+  }
+}

@@ -1,0 +1,21 @@
+.pagination {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 4px;
+  padding: 16px 0;
+  background-color: #fff;
+  border-radius: 16px;
+  &__item {
+    padding: 6px 12px;
+    border-radius: 12px;
+    @include text_descriptor();
+    color: var(--blue-color);
+    background-color: transparent;
+    &_active {
+      background-color: var(--blue-color);
+      color: var(--white-color);
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.container {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  column-gap: 8px;
+  cursor: pointer;
+  &__label {
+    @include text_body();
+    &_active {
+      color: var(--blue-color, #1E4391);
+    }
+  }
+}
+
+.checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--blue-color, #1E4391);
+  background-color: #fff;
+  cursor: pointer;
+  &_active {
+    background-color: var(--blue-color, #1E4391);
+    &::after {
+      content: '';
+      position: absolute;
+      background-image: url(../../../Assets/Icons/Check.svg);
+      width: 11px;
+      height: 8px;
+    }
+  }
+}

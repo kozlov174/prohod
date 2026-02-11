@@ -1,0 +1,101 @@
+import { AcademGroup } from '@/Models/AcademGroup/api';
+import { User } from '@/Models/Auth/api';
+import { Discipline } from '@/Models/Discipline/api';
+import { CheckedByDispatcherType, ExamType, LevelsRealize, RealizeType } from '@/Models/Mup/client';
+import { Division } from '@/Models/ReadingDivision/api';
+import { Filter } from '@/Models/Shared/filter';
+import { List } from '@/Models/Shared/list';
+
+export type MUP = {
+  id: string;
+  readingDivision: Division;
+  discipline: Omit<Discipline, 'idEduYear'>;
+  idPartner?: string;
+  idOnlineCourse?: string;
+  name: string;
+  link: string;
+  distantRealize: boolean;
+  typeRealize: 'online' | 'offline' | 'mixed';
+  modelRealize?: 1 | 2 | 3 | 4 | 5 | null;
+  entranceTesting: boolean;
+  level: 'base' | 'heightened';
+  typeExem: 'without' | 'online' | 'smuds';
+  limitStudent: number;
+  comment?: string;
+  checkedByDispatcher: CheckedByDispatcherType;
+  isRealized: boolean;
+  isPublished: boolean;
+  isProcessMapApproved: boolean;
+  cntKr?: number;
+  cntRgr?: number;
+  cntRr?: number;
+  cntColoc?: number;
+  cntHw?: number;
+  lecCntPeopleExpand?: number;
+  lecCntTeamsExpand?: number;
+  prCntPeopleExpand?: number;
+  prCntTeamsExpand?: number;
+  labCntPeopleExpand?: number;
+  labCntTeams?: number;
+
+  teachers: User[];
+  academGroups: AcademGroup[];
+
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type GetMUPSRequest = { idEduYear: string } & Filter<{
+  idsInstitute: string[];
+  idsDirection: string[];
+  idsProgram: string[];
+  idsDiscipline: string[];
+  idsOnlineCourse: string[];
+  idsReadingDivision: string[];
+  idsPartner: string[];
+  idsTeacher: string[];
+  typesRealize: string[];
+  LEVELS_REALIZE: string[];
+  checkedByDispatcher: string[];
+  isRealized: boolean;
+  isPublished: boolean;
+  isProcessMapApproved: boolean;
+}>;
+export type GetMUPSResponse = List<MUP>;
+
+export type CreateMUPRequest = {
+  idDiscipline: string;
+  idReadingDivision: string;
+  idPartner?: string;
+  idOnlineCourse?: string;
+  idsTeacher?: string[];
+  idsAcademGroup?: string[];
+  name: string;
+  link: string;
+  typeRealize: RealizeType;
+  modelRealize?: number;
+  entranceTesting: boolean;
+  level?: LevelsRealize;
+  typeExem: ExamType;
+  limitStudent: number;
+  comment?: string;
+  checkedByDispatcher?: CheckedByDispatcherType;
+  isRealized?: boolean;
+  isPublished?: boolean;
+  isProcessMapApproved?: boolean;
+  cntKr?: number;
+  cntRgr?: number;
+  cntRr?: number;
+  cntColoc?: number;
+  cntHw?: number;
+  lecCntPeople?: number;
+  lecCntTeams?: number;
+  prCntPeople?: number;
+  prCntTeams?: number;
+  labCntPeople?: number;
+  labCntTeams?: number;
+  isActive?: boolean;
+};
+
+export type EditMUPRequest = Partial<CreateMUPRequest>;

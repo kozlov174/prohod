@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  column-gap: 10px;
+
+  &__label {
+    font-size: 14px;
+  }
+}
+
+.switcher {
+  width: 40px;
+  height: 24px;
+  border-radius: 9999px;
+  padding: 4px;
+  background-color: var(--light-grey-color);
+  cursor: pointer;
+
+  &_active {
+    background-color: var(--secondary-color, #7561e5);
+  }
+
+  &__circle {
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow:
+      0px 0px 1px 0px #0000004d,
+      0px 2px 10px 0px #0000000f,
+      0px 0px 5px 0px #00000005;
+
+    &_active {
+      transform: translateX(100%);
+    }
+  }
+}

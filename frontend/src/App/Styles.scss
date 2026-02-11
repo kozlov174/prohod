@@ -1,0 +1,48 @@
+@import url(../Styles/index.scss);
+@import url(../Styles/variables.scss);
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  background: var(--body-color);
+  height: 100vh;
+  height: -webkit-fill-available;
+  color: var(--black-color);
+}
+
+* {
+  scrollbar-width: none;
+}
+
+.opacity {
+  opacity: var(--opacity-value);
+}
+.pointer {
+  cursor: pointer;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.h100 {
+  max-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  background-color: var(--main-color);
+  display: grid;
+  grid-template-columns: 20% 80%;
+  grid-template-rows: auto;
+  column-gap: 12px;
+  padding: 32px 40px;
+  max-width: 100%;
+  overflow: hidden;
+  &__content {
+    min-height: 0;
+  }
+}

@@ -1,0 +1,23 @@
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 12px 20px;
+  border-radius: 120px;
+  gap: 10px;
+  @include text_subtitle();
+  cursor: pointer;
+  border: 1px solid var(--black-3-color);
+  color: var(--black-3-color);
+  &_active {
+    border: none;
+    color: #fff;
+    background-color: var(--blue-color);
+  }
+  &_trash {
+    background-color: transparent;
+    width: 24px;
+    height: 24px;
+  }
+}
