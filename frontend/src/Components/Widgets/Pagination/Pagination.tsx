@@ -1,14 +1,24 @@
 import { JSX, memo } from 'react';
 import styles from './Styles.module.scss';
 import { Icon } from '@/Components/UI/Icon';
+import { Select } from '@/Components/UI/Select';
+import { VIEWS_COUNT } from '@/Components/Widgets/Pagination/const';
 
 interface PaginationProps {
   activeStage: number;
   totalStages: number;
   changeActiveStage: (toStage: number) => void;
+  selectedView: number;
+  setSelectedView: (toView: number) => void;
 }
 
-function PaginationComponent({ activeStage, totalStages, changeActiveStage }: PaginationProps): JSX.Element {
+function PaginationComponent({
+  activeStage,
+  totalStages,
+  selectedView,
+  setSelectedView,
+  changeActiveStage,
+}: PaginationProps): JSX.Element {
   const getActivePaginationItems = (
     totalPages: number,
     currentPage: number,
@@ -106,6 +116,16 @@ function PaginationComponent({ activeStage, totalStages, changeActiveStage }: Pa
           glyph="arrowRight"
           glyphColor={activeStage !== totalStages - 1 ? 'blue' : 'grey'}
           onClick={() => activeStage !== totalStages - 1 && changeActiveStage(activeStage + 1)}
+        />
+      </div>
+      <div className={styles.pagination__select}>
+        <p>Показывать на странице</p>
+        <Select
+          direction="up"
+          type="single"
+          selectedValue={{ id: selectedView.toString(), value: selectedView }}
+          onChange={newValue => setSelectedView(Number(newValue.value))}
+          list={VIEWS_COUNT.map(el => ({ id: el.toString(), value: el }))}
         />
       </div>
     </div>

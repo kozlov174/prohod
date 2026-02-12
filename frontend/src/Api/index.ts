@@ -1,20 +1,21 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'react-toastify';
-import { getTokenFromCookie, setTokensToCookies } from '../Utils/token';
+import { getTokenFromCookie } from '../Utils/token';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
-import { updateToken } from '@/Api/auth';
 import { logoutUser } from '@/Utils/auth';
 import { camelToSnake, snakeToCamel } from '@/Utils';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL_PUBLIC;
 
 const notify = (message: string) => toast(message);
 
 export const PagesURl = {
   ACCOUNTS: '/accounts',
   USER: '/users',
-  VISIT_FOR_USERS: '/visit-requests-for-users/visit-requests',
+  VISIT_FOR_USERS: '/visit-requests-for-users/visit-requests/',
+  VISIT_FOR_SECURITY: '/visit-requests-for-security/visit-requests/',
   VERIFY_EMAIL: '/users/verify_email',
+  REPORT: '/reports',
 };
 
 const REQUEST_TIMEOUT = 10000;
@@ -78,20 +79,8 @@ const responseInterceptors = {
 };
 
 async function refreshAccessToken() {
-  try {
-    const refreshToken = getTokenFromCookie('refresh');
-    if (!refreshToken) {
-      window.location.pathname = '/login';
-      return;
-    }
-    const response = await updateToken(refreshToken);
-    setTokensToCookies(response.accessToken, 'access');
-    setTokensToCookies(response.refreshToken, 'refresh');
-    return '';
-  } catch {
-    logoutUser();
-    window.location.href = '/login';
-  }
+  logoutUser();
+  window.location.href = '/login';
 }
 
 instance.interceptors.request.use(requestInterceptors.onSuccess, requestInterceptors.onError);
@@ -102,5 +91,9 @@ createAuthRefreshInterceptor(instance, refreshAccessToken, {
 });
 
 instance.interceptors.response.use(responseInterceptors.onSuccess, responseInterceptors.onError);
+
+export const privateInstance = instance.create({
+  baseURL: import.meta.env.VITE_BACKEND_URL_PRIVATE,
+});
 
 export default instance;

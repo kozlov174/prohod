@@ -8,12 +8,15 @@ function HeaderComponent(): JSX.Element {
 
   return (
     <header className={styles.header}>
-      <Link to={'/'}>
+      <Link className={styles.header__logos} to={'/'}>
         <img className={styles.header__logo} src="/logo.svg" alt="Уральский Федеральный Университет" />
+        {/* <img className={styles.header__prohod} src="/prohodLogo.svg" alt="Уральский Федеральный Университет" /> */}
       </Link>
-      <Button size="s" color="secondary" onClick={() => navigate('/login')}>
-        Выйти
-      </Button>
+      {window.location.pathname === '/' || (
+        <Button size="s" color="secondary" onClick={() => navigate('/login')}>
+          Выйти
+        </Button>
+      )}
     </header>
   );
 }

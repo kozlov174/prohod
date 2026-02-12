@@ -4,10 +4,7 @@ import { defineConfig } from 'vite';
 import { checker } from 'vite-plugin-checker';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    checker({typescript: true}),
-  ],
+  plugins: [react(), checker({ typescript: true })],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -15,7 +12,7 @@ export default defineConfig({
       '@ui': resolve(__dirname, 'src/Components/UI'),
       '@widgets': resolve(__dirname, 'src/Components/Widgets'),
       '@layouts': resolve(__dirname, 'src/Components/Layouts'),
-      '@schemas' : resolve(__dirname, 'src/Schemas')
+      '@schemas': resolve(__dirname, 'src/Schemas'),
     },
   },
   build: {
@@ -27,25 +24,9 @@ export default defineConfig({
         assetFileNames: `[name]-[hash].[ext]`,
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-ui': [
-            'recharts', 
-            '@recharts/devtools',
-            'react-datepicker',
-            'react-toastify'
-          ],
-          'vendor-utils': [
-            'lodash',
-            'date-fns',
-            'yup',
-            'classnames',
-            'class-variance-authority'
-          ],
-          'vendor-state': [
-            '@tanstack/react-query',
-            'axios',
-            'react-hook-form',
-            '@hookform/resolvers'
-          ],
+          'vendor-ui': ['recharts', '@recharts/devtools', 'react-datepicker', 'react-toastify'],
+          'vendor-utils': ['lodash', 'date-fns', 'yup', 'classnames', 'class-variance-authority'],
+          'vendor-state': ['@tanstack/react-query', 'axios', 'react-hook-form', '@hookform/resolvers'],
         },
       },
     },
@@ -59,7 +40,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: 5175,
     host: true,
     open: true,
   },

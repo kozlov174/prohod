@@ -124,7 +124,7 @@ function SelectComponent({
                   {selectedValue?.value}
                 </p>
               ) : (
-                <p>{placeholder}</p>
+                isDisplayFull || <p>{placeholder}</p>
               )
             ) : selectedValue && !!selectedValue.length ? (
               selectedValue.map(el => (
@@ -145,13 +145,7 @@ function SelectComponent({
               <p>{placeholder}</p>
             )}
             {disabled || (
-              <input
-                ref={inputRef}
-                name="search"
-                type="text"
-                value={searchValue}
-                onChange={e => setSearchValue(e.target.value)}
-              />
+              <input ref={inputRef} type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} />
             )}
           </div>
           {disabled || (

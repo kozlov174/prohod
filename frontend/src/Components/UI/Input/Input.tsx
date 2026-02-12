@@ -10,7 +10,7 @@ type InputProps = (
       value: number;
     }
   | {
-      type: 'text' | 'search' | 'date' | 'password';
+      type: 'text' | 'search' | 'date' | 'time' | 'password';
       value: string;
       onChange: (value: string) => void;
     }

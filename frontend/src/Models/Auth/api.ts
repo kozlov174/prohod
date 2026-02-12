@@ -1,41 +1,47 @@
 import { UserRole } from '@/Models/Auth/client';
-import { Filter } from '@/Models/Shared/filter';
 import { List } from '@/Models/Shared/list';
 
 export type LoginResponse = {
-  accessToken: string;
-  refreshToken: string;
-  firstEntrance: boolean;
+  user: {
+    id: string;
+    name: string;
+    surname: string;
+    userEmail: string;
+    role: UserRole;
+  };
+  jwtToken: string;
 };
 export type LoginRequest = {
-  username: string;
+  login: string;
   password: string;
 };
 
 export type User = {
   id: string;
-  idInstitute?: string;
-  idDirection?: string;
-  idReadingDivision?: string;
-  idProgram?: string;
   name: string;
   surname: string;
-  patronymic: string;
-  email: string;
-  phone?: string;
+  userEmail: string;
   role: UserRole;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt?: string;
+  login: string;
+};
+
+export type PrivateUser = User & {
+  status: string;
 };
 
 export type GetAllUsersResponse = List<User>;
-export type GetAllUsersRequest = Filter<{
-  idInstitute: string;
-  idDirection: string;
-  idReadingDivision: string;
-  idProgram: string;
-}>;
 
-export type CreateUserRequest = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'>;
-export type EditUserRequest = Partial<CreateUserRequest>;
+export type CreateUserRequest = Omit<User, 'login' | 'role'>;
+
+export type RestorePasswordRequest = {
+  login: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+export type ResetAdminPassword = {
+  login: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};

@@ -1,0 +1,10 @@
+.users {
+  &__filters {
+    display: grid;
+    grid-template-columns: 20% 5%;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}

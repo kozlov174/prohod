@@ -10,6 +10,10 @@ import { PermissionContext } from '@/Contexts/permission';
 import { AxiosError, isAxiosError } from 'axios';
 import { useEffect } from 'react';
 import { getTokenFromCookie, parseJwt } from '@/Utils/token';
+import { Main } from '@/Components/Pages/Main';
+import { Visits } from '@/Components/Pages/Visits';
+import { Enter } from '@/Components/Pages/Enter';
+import { Users } from '@/Components/Pages/Users';
 
 function AppComponent() {
   const queryClient = new QueryClient({
@@ -31,15 +35,19 @@ function AppComponent() {
       <BrowserRouter>
         <ToastContainer />
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<OutletWrapper />} />
+          <Route path="/" element={<Main isPublic />} />
+          <Route path="/login" element={<Login isPublic />} />
+          <Route path="/enter" element={<Enter />} />
+          <Route path="/admin" element={<Main />} />
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="*" element={<PrivateWrapper />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
   );
 }
 
-function OutletWrapper() {
+function PrivateWrapper() {
   const navigate = useNavigate();
   useEffect(() => {
     const accessToken = getTokenFromCookie('access');
@@ -49,14 +57,17 @@ function OutletWrapper() {
       return;
     }
   }, []);
+
   return (
     <PermissionContext.Provider value={{ user: null }}>
       <div className={'container'}>
         <Header />
         <main className={'main'}>
-          <div className={'main__content'}>
-            <Routes></Routes>
-          </div>
+          <Routes>
+            <Route path="/visits" element={<Visits isPublic />} />
+            <Route path="/admin/visits" element={<Visits />} />
+            <Route path="/admin/users" element={<Users />} />
+          </Routes>
         </main>
       </div>
     </PermissionContext.Provider>

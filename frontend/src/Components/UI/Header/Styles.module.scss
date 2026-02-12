@@ -3,6 +3,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px 40px;
+
+  &__logos {
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+  }
+
+  &__prohod {
+    width: 232px;
+    margin-bottom: 15px;
+  }
+
   &__logo {
     cursor: pointer;
   }

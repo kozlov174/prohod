@@ -1,147 +1,93 @@
-import { JSX, memo, useState } from 'react';
+import { JSX, memo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './Styles.module.scss';
-import { loginSchema, resetSchema } from './schema';
+import { loginSchema } from './schema';
 import { InferType } from 'yup';
 import { Button } from '@/Components/UI/Button';
 import { setTokensToCookies } from '@/Utils/token';
-import { login } from '@/Api/auth';
-import { useNavigate } from 'react-router-dom';
+import { login } from '@/Api/public/auth';
+import { login as privateLogin } from '@/Api/private/auth';
+import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/Components/UI/Checkbox';
 import { Input } from '@/Components/UI/Input';
-import { toast } from 'react-toastify';
 
-function LoginComponent(): JSX.Element {
+interface LoginProps {
+  isPublic?: boolean;
+}
+
+function LoginComponent({ isPublic }: LoginProps): JSX.Element {
   const navigate = useNavigate();
-  const [isResetPassword, setIsResetPassword] = useState(false);
   const loginForm = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: { remember: false },
   });
-  const resetForm = useForm({
-    resolver: yupResolver(resetSchema),
-  });
 
   const onSubmit = async (data: InferType<typeof loginSchema>) => {
     try {
-      const user = await login({ username: data.username, password: data.password });
+      const user = isPublic ? await login(data) : await privateLogin(data);
       if (user) {
-        setTokensToCookies(user.accessToken, 'access', {}, !data.remember);
-        setTokensToCookies(user.refreshToken, 'refresh', {}, !data.remember);
-        navigate('/');
+        console.log(user);
+        setTokensToCookies(user.jwtToken, 'access', {}, !data.remember);
+        navigate('/visits');
       }
     } catch {
       loginForm.setError('password', { message: 'Неправильный логин или пароль' });
-      loginForm.setError('username', { message: ' ' });
+      loginForm.setError('login', { message: ' ' });
     }
-  };
-
-  const onResetPassword = (data: InferType<typeof resetSchema>) => {
-    console.log(data);
-    toast.success('Письмо отправлено');
-    resetForm.reset();
-    setIsResetPassword(false);
   };
 
   return (
     <div className={styles.container}>
-      {isResetPassword ? (
-        <form key="reset-form" className={styles.container__form} onSubmit={resetForm.handleSubmit(onResetPassword)}>
-          <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
-          <h2 className={styles.container__title}>{'Восстановление пароля'}</h2>
-          <Controller
-            name="mail"
-            control={resetForm.control}
-            render={({ field }) => (
-              <Input
-                name={field.name}
-                type="text"
-                value={field.value}
-                onChange={val => {
-                  console.log(val);
-                  resetForm.setValue('mail', val);
-                }}
-                error={resetForm.formState.errors.mail?.message}
-                placeholder="Почта"
-              />
-            )}
-          />
-          <div className={styles.container__buttons}>
-            <Button
-              onClick={() => {
-                setIsResetPassword(!isResetPassword);
-                resetForm.reset();
-              }}
-              type="button"
-              size="s"
-              color="secondary"
-              fullWidth
-            >
-              {'Назад'}
+      <form key="login-form" className={styles.container__form} onSubmit={loginForm.handleSubmit(onSubmit)}>
+        <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
+        <h2 className={styles.container__title}>{'Вход'}</h2>
+        <Controller
+          name="login"
+          control={loginForm.control}
+          render={({ field }) => (
+            <Input
+              name={field.name}
+              type="text"
+              value={field.value}
+              onChange={field.onChange}
+              error={loginForm.formState.errors.login?.message}
+              placeholder="Логин"
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={loginForm.control}
+          render={({ field }) => (
+            <Input
+              name={field.name}
+              value={field.value}
+              onChange={field.onChange}
+              error={loginForm.formState.errors.password?.message}
+              placeholder="Пароль"
+              type="password"
+            />
+          )}
+        />
+        <Controller
+          name="remember"
+          control={loginForm.control}
+          render={({ field }) => (
+            <Checkbox label="Запомнить меня" isActive={field.value} onChange={() => field.onChange(!field.value)} />
+          )}
+        />
+        <div className={styles.container__buttons}>
+          <Link to={isPublic ? '/' : '/admin'}>
+            <Button type="button" size="s" color="secondary" fullWidth>
+              {'На главную'}
             </Button>
-            <Button type="submit" size="ss" fullWidth color="blue">
-              {'Отправить письмо'}
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <form key="login-form" className={styles.container__form} onSubmit={loginForm.handleSubmit(onSubmit)}>
-          <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
-          <h2 className={styles.container__title}>{'Вход'}</h2>
-          <Controller
-            name="username"
-            control={loginForm.control}
-            render={({ field }) => (
-              <Input
-                name={field.name}
-                type="text"
-                value={field.value}
-                onChange={field.onChange}
-                error={loginForm.formState.errors.username?.message}
-                placeholder="Логин"
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={loginForm.control}
-            render={({ field }) => (
-              <Input
-                name={field.name}
-                value={field.value}
-                onChange={field.onChange}
-                error={loginForm.formState.errors.password?.message}
-                placeholder="Пароль"
-                type="password"
-              />
-            )}
-          />
-          <Controller
-            name="remember"
-            control={loginForm.control}
-            render={({ field }) => (
-              <Checkbox label="Запомнить меня" isActive={field.value} onChange={() => field.onChange(!field.value)} />
-            )}
-          />
-          <div className={styles.container__buttons}>
-            <Button
-              onClick={() => {
-                setIsResetPassword(true);
-              }}
-              type="button"
-              size="s"
-              color="secondary"
-              fullWidth
-            >
-              {'Забыли пароль?'}
-            </Button>
-            <Button type="submit" size="ss" fullWidth color="blue">
-              {'Войти'}
-            </Button>
-          </div>
-        </form>
-      )}
+          </Link>
+          <Button type="submit" size="ss" fullWidth color="blue">
+            {'Войти'}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

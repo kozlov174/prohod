@@ -1,0 +1,76 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7f8;
+
+  span {
+    color: var(--black-3-color);
+    font-size: 14px;
+  }
+
+  &__form {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #0001;
+    padding: 32px;
+    min-width: 70vw;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+  }
+
+  &__logo {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    width: 90px;
+  }
+
+  &__line {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  &__email {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 178px;
+    align-items: center;
+    gap: 8px;
+
+    &_active {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  &__code {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__repeat {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--blue-color) !important;
+  }
+
+  &__sendBlock {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__send {
+    position: absolute;
+    right: 0;
+    top: 27px;
+  }
+}

@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   background: #f7f7f8;
+
   &__form {
     background: #fff;
     border-radius: 16px;
@@ -15,19 +16,22 @@
     gap: 16px;
     position: relative;
   }
+
   &__logo {
-    position: absolute; 
-    right: 24px; 
-    top: 24px; 
+    position: absolute;
+    right: 24px;
+    top: 24px;
     width: 90px;
   }
+
   &__title {
     margin: 0;
-    margin-bottom: 16px; 
-    color: '#1E4391'; 
-    font-weight: 700; 
+    margin-bottom: 16px;
+    color: '#1E4391';
+    font-weight: 700;
     font-size: 24px;
   }
+
   &__input {
     font-weight: 400;
     font-size: 14px;
@@ -38,41 +42,49 @@
     border-radius: 8px;
     padding: 10px 12px;
     margin-bottom: 0;
+
     &_error {
-      color: '#d22d25'; 
+      color: '#d22d25';
       font-size: 13px;
       margin-top: 4px;
-    }    
+    }
   }
+
   &__password {
     position: relative;
   }
+
   &__icon {
     position: absolute;
     top: 9px;
     right: 12px;
     cursor: pointer;
   }
+
   &__error {
     color: #d22d25;
-    font-size: 15px; 
+    font-size: 15px;
     margin: 4px 0 0 0;
   }
+
   &__label {
     display: flex;
-    align-items: center; 
-    gap: 8px; 
-    margin: 8px 0 0 0; 
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0 0;
     font-size: 15px;
   }
+
   &__checkbox {
-    accent-color: '#1E4391'; 
-    width: 16px; 
-    height: 16px; 
+    accent-color: '#1E4391';
+    width: 16px;
+    height: 16px;
     margin: 0;
   }
+
   &__buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 32px;
   }
 }
