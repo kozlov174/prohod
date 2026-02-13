@@ -1,0 +1,121 @@
+.container {
+  width: 454px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 4px;
+
+  &__list {
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid var(--black-2-color);
+    border-radius: 12px;
+  }
+}
+
+.input {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  height: 154px;
+  border: 1px dashed var(--blue-color);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 12px;
+
+  &_hover {
+    background-color: var(--black-2-color);
+  }
+
+  &:hover {
+    background-color: var(--black-2-color);
+  }
+
+  &__input {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__text {
+    margin-top: 12px;
+    @include text_body_2();
+    color: var(--black-3-color);
+
+    & span {
+      color: var(--blue-color);
+    }
+  }
+}
+
+.file {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  padding: 12px 8px;
+  align-items: center;
+  cursor: pointer;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--black-2-color);
+  }
+
+  &:hover {
+    background-color: var(--black-2-color);
+    border-bottom: none;
+
+    &:not(:last-child) {
+      margin-bottom: 1px;
+    }
+
+    .file__delete {
+      display: block;
+    }
+  }
+
+  &__about {
+    min-height: 24px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    column-gap: 8px;
+  }
+
+  &__name {
+    @include text_body_2();
+    color: var(--black-color);
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  &__size {
+    @include text_body_2();
+    color: var(--black-3-color);
+  }
+
+  &__delete {
+    display: none;
+    height: 24px;
+    margin-left: auto;
+  }
+
+  &__error {
+    @include text_descriptor_2();
+    color: var(--red-color);
+  }
+}

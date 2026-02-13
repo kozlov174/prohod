@@ -20,6 +20,15 @@ export function convertObjectToListValue<T extends { name: string; id: string }>
   };
 }
 
+export function convertToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+}
+
 export function createNestedArray<T>(length: number) {
   return Array.from({ length: length }, () => Array.from({ length: length }, () => [] as T[]));
 }

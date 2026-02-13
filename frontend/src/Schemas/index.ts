@@ -6,32 +6,35 @@ type AutoUndefined<T> = {
 
 export type TYupObjectSchema<T> = yup.ObjectSchema<Required<T>, yup.AnyObject, AutoUndefined<T>, ''>;
 
-export const ListValuesChema = yup
-  .array()
-  .of(
-    yup.object({
-      id: yup.string().required(),
-      value: yup.string().required(),
-    })
-  )
-  .default([])
-  .defined();
+export const ListValuesChema = <T extends string = string>() =>
+  yup
+    .array()
+    .of(
+      yup.object({
+        id: yup.mixed<T>().required(),
+        value: yup.mixed<string | number>().required(),
+      })
+    )
+    .default([])
+    .defined();
 
-export const ListValueChema = yup
-  .object({
-    id: yup.string().required(),
-    value: yup.string().required(),
-  })
-  .strict();
-
-export const ListValueWithCountChema = yup
-  .array()
-  .of(
-    yup.object({
-      id: yup.string().required(),
-      value: yup.string().required(),
-      count: yup.number().required().default(0),
+export const ListValueChema = <T extends string = string>() =>
+  yup
+    .object({
+      id: yup.mixed<T>().required(),
+      value: yup.mixed<string | number>().required(),
     })
-  )
-  .default([])
-  .defined();
+    .strict();
+
+export const ListValueWithCountChema = <T extends string = string>() =>
+  yup
+    .array()
+    .of(
+      yup.object({
+        id: yup.mixed<T>().required(),
+        value: yup.mixed<string | number>().required(),
+        count: yup.number().required().default(0),
+      })
+    )
+    .default([])
+    .defined();

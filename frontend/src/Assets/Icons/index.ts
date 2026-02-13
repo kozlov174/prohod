@@ -9,6 +9,9 @@ import Settings from './Settings.svg';
 import ArrowLeft from './ArrowLeft.svg';
 import ArrowRight from './ArrowRight.svg';
 import Add from './Add.svg';
+import CheckCircle from './CheckCircle.svg';
+import Error from './Error.svg';
+import Upload from './Upload.svg';
 
 export const icons = {
   arrowDown: ArrowDown,
@@ -22,6 +25,9 @@ export const icons = {
   arrowLeft: ArrowLeft,
   arrowRight: ArrowRight,
   add: Add,
+  checkCircle: CheckCircle,
+  error: Error,
+  upload: Upload,
 } as const;
 
 export type Glyph = keyof typeof icons;

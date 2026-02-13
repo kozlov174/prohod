@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   radius?: number;
+  disabled?: boolean;
 }
 
 function ButtonComponent({
@@ -16,6 +17,7 @@ function ButtonComponent({
   color = 'blue',
   children,
   fullWidth,
+  disabled,
   onClick,
   type = 'button',
   radius,
@@ -23,9 +25,9 @@ function ButtonComponent({
   return (
     <button
       style={{ borderRadius: radius ? `${radius}px` : '' }}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       type={type}
-      className={`${styles.button} ${styles[`button_${color}`]} ${styles[`button_${size}`]} ${fullWidth && styles.button_fullWidth}`}
+      className={`${styles.button} ${disabled && styles.button_disabled} ${styles[`button_${color}`]} ${styles[`button_${size}`]} ${fullWidth && styles.button_fullWidth}`}
     >
       {children}
     </button>

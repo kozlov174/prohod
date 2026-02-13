@@ -6,51 +6,68 @@
   transition: background-color 0.3s ease-out;
   color: var(--white-color);
   min-width: 170px;
+
   &_l {
     @include text_subtitle();
     padding: 29px 80px;
     border-radius: var(--big-border-radius);
   }
+
   &_m {
     @include text_body();
     padding: 25px 72px;
     border-radius: var(--small-border-radius);
   }
+
   &_s {
     @include text_descriptor();
     padding: 16px 32px;
     border-radius: var(--small-border-radius);
   }
+
   &_ss {
     @include text_descriptor();
     padding: 10px 22px;
     border-radius: var(--small-border-radius);
   }
+
   &_min {
     min-width: 0;
     border-radius: var(--small-border-radius);
     padding: 5px;
   }
+
   &_blue {
     background-color: var(--blue-color);
+
     &:hover {
       background-color: var(--blue-2-color);
     }
   }
+
   &_red {
     background-color: var(--red-color);
+
     &:hover {
       background-color: var(--red-2-color);
     }
   }
+
   &_secondary {
     color: var(--blue-color);
     background-color: var(--ultra-light-grey-color);
+
     &:hover {
       background-color: var(--light-grey-color);
     }
   }
+
   &_fullWidth {
     width: 100%;
+  }
+
+  &_disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }

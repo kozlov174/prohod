@@ -1,9 +1,9 @@
 import instance, { PagesURl } from '@/Api';
-import { CreateUserRequest, PrivateUser, User } from '@/Models/Auth/api';
+import { CreateUserRequest, PrivateUser } from '@/Models/Auth/api';
 import { UserRole } from '@/Models/Auth/client';
 
 export const getAllUsers = async () => {
-  const response = await instance.get<{ users: User[] }>(PagesURl.USER + '/users/');
+  const response = await instance.get<{ users: PrivateUser[] }>(PagesURl.USER + '/users/');
   return response.data;
 };
 

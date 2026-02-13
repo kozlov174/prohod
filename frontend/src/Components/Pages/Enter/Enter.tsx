@@ -10,15 +10,30 @@ import { Checkbox } from '@/Components/UI/Checkbox';
 import { sendVerifyEmail, verifyEmail } from '@/Api/public/verifyEmail';
 import cn from 'classnames';
 import { toast } from 'react-toastify';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAllUsers } from '@/Api/public/user';
-import { pluralize } from '@/Utils';
-import { Link } from 'react-router-dom';
+import { convertToBase64, pluralize } from '@/Utils';
+import { Link, useNavigate } from 'react-router-dom';
+import { FileInput } from '@/Components/UI/FileInput';
+import { parse, formatISO, set } from 'date-fns';
+import { InferType } from 'yup';
+import { createVisitRquest } from '@/Api/public/visit';
 
 function EnterComponent(): JSX.Element {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: () => getAllUsers(),
+  });
+  const createVisitMutation = useMutation({
+    mutationFn: createVisitRquest,
+    onSuccess: () => {
+      toast.success('Заявка отправлена');
+      queryClient.invalidateQueries({ queryKey: ['visits'] });
+      enterForm.reset();
+      navigate('/');
+    },
   });
   const enterForm = useForm({
     resolver: yupResolver(enterFormSchema),
@@ -60,6 +75,26 @@ function EnterComponent(): JSX.Element {
     }
   };
 
+  const onSubmit = async (data: InferType<typeof enterFormSchema>) => {
+    createVisitMutation.mutate({
+      form: {
+        ...data,
+        userToVisitId: data.userToVisit.id,
+        passportPhoto: await convertToBase64(data.passportPhoto),
+        passportSeries: String(data.passportSeries),
+        passportNumber: String(data.passportNumber),
+        passportWhoIssued: String(data.passportWhoIssued),
+        passportIssueDate: formatISO(parse(data.passportIssueDate, 'yyyy-MM-dd', new Date())),
+        visitTime: formatISO(
+          set(parse(data.visitDate, 'yyyy-MM-dd', new Date()), {
+            hours: Number(data.visitTime.split(':')[0]),
+            minutes: Number(data.visitTime.split(':')[1]),
+          })
+        ),
+      },
+    });
+  };
+
   useEffect(() => {
     if (!timer) return;
 
@@ -82,7 +117,7 @@ function EnterComponent(): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <form className={styles.container__form}>
+      <form className={styles.container__form} onSubmit={enterForm.handleSubmit(onSubmit)}>
         <Link to="/">
           <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
         </Link>
@@ -162,6 +197,19 @@ function EnterComponent(): JSX.Element {
             )}
           />
         </div>
+        <Controller
+          name="passportPhoto"
+          control={enterForm.control}
+          render={({ field }) => (
+            <FileInput
+              file={field.value}
+              onUploadFile={val => {
+                console.log(val);
+                field.onChange(val);
+              }}
+            />
+          )}
+        />
         <p>2. Уточните детали визита</p>
         <div className={styles.container__line}>
           <Controller

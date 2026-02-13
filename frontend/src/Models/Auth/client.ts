@@ -1,3 +1,3 @@
 export type TokenData = unknown;
 
-export type UserRole = 'user' | 'security' | 'admin' | 'post';
+export type UserRole = 'user' | 'security' | 'admin';
