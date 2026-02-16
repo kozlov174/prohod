@@ -6,6 +6,7 @@ import { addUserSchema } from '@/Components/Pages/Users/Components/AddUserPopup/
 import { Input } from '@/Components/UI/Input';
 import { Select } from '@/Components/UI/Select';
 import { USER_ROLE_LIST } from '@/Constants/User';
+import styles from './Styles.module.scss';
 
 interface AddUserPopupProps {
   onClose: () => void;
@@ -18,7 +19,7 @@ function AddUserPopupComponent({ onClose }: AddUserPopupProps): JSX.Element {
   });
   return (
     <Popup displayCloseButton onClose={onClose}>
-      <form>
+      <form className={styles.addUserPopup}>
         <h2>Добавление пользователя</h2>
         <Controller
           control={addUserForm.control}
@@ -77,10 +78,11 @@ function AddUserPopupComponent({ onClose }: AddUserPopupProps): JSX.Element {
           name="role"
           render={({ field }) => (
             <Select
-              list={USER_ROLE_LIST}
+              direction="up"
+              list={USER_ROLE_LIST.filter(item => item.id !== 'admin')}
               error={addUserForm.formState.errors[field.name]?.message}
-              placeholder="Введите логин"
-              label="Логин"
+              placeholder="Выберите роль"
+              label="Роль"
               type="single"
               selectedValue={field.value}
               onChange={field.onChange}

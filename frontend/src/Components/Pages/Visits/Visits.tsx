@@ -15,6 +15,7 @@ import { Pagination } from '@/Components/Widgets/Pagination';
 import { Button } from '@/Components/UI/Button';
 import { Link } from 'react-router-dom';
 import { getPaginatedData } from '@/Utils/table';
+import { CreateReport } from '@/Components/Pages/Visits/Components/CreateReport';
 
 interface VisitsProps {
   isPublic?: boolean;
@@ -22,6 +23,7 @@ interface VisitsProps {
 
 function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   const [search, setSearch] = useState('');
+  const [isDisplayNewReport, setIsDisplayNewReport] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ListValue>(VISIT_STATUS_LIST[0]);
   const [activePage, setActivePage] = useState(1);
   const [activeViews, setActiveViews] = useState(10);
@@ -46,64 +48,69 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   } */
 
   return (
-    <div className={styles.visits}>
-      <h2>Посещения</h2>
-      <div className={styles.visits__buttons}>
-        <Link to="/admin/users">
-          <Button size="s">Добавить пользователя</Button>
-        </Link>
-        <Button size="s">Отчеты</Button>
+    <>
+      <div className={styles.visits}>
+        <h2>Посещения</h2>
+        <div className={styles.visits__buttons}>
+          <Link to="/admin/users">
+            <Button size="s">Добавить пользователя</Button>
+          </Link>
+          <Button onClick={() => setIsDisplayNewReport(true)} size="s">
+            Отчеты
+          </Button>
+        </div>
+        <div className={styles.visits__filters}>
+          <Input label="Поиск" placeholder="Поиск" value={search} onChange={setSearch} type="search" />
+          <Select
+            label="Статус"
+            type="single"
+            selectedValue={selectedStatus}
+            onChange={setSelectedStatus}
+            list={VISIT_STATUS_LIST}
+          />
+        </div>
+        {visits ? (
+          <Table
+            data={getPaginatedData(visits.visitRequests, activePage, activeViews, search).map(el => ({
+              id: el.id,
+              visitor: el.form.passportFullName,
+              date: getPrettyDate(el.form.visitTime),
+              status: VISIT_STATUS[el.status],
+            }))}
+            columns={[
+              {
+                name: 'ID заявки',
+                backName: 'id',
+              },
+              {
+                name: 'Посетитель',
+                backName: 'visitor',
+              },
+              {
+                name: 'Дата посещения',
+                backName: 'date',
+              },
+              {
+                name: 'Статус',
+                backName: 'status',
+              },
+            ]}
+          />
+        ) : (
+          <p>Ошибка при получении данных</p>
+        )}
+        {visits && (
+          <Pagination
+            selectedView={activeViews}
+            setSelectedView={setActiveViews}
+            activeStage={activePage - 1}
+            totalStages={Math.ceil(visits?.visitRequests.length / activeViews)}
+            changeActiveStage={setActivePage}
+          />
+        )}
       </div>
-      <div className={styles.visits__filters}>
-        <Input label="Поиск" placeholder="Поиск" value={search} onChange={setSearch} type="search" />
-        <Select
-          label="Статус"
-          type="single"
-          selectedValue={selectedStatus}
-          onChange={setSelectedStatus}
-          list={VISIT_STATUS_LIST}
-        />
-      </div>
-      {visits ? (
-        <Table
-          data={getPaginatedData(visits.visitRequests, activePage, activeViews, search).map(el => ({
-            id: el.id,
-            visitor: el.form.passportFullName,
-            date: getPrettyDate(el.form.visitTime),
-            status: VISIT_STATUS[el.status],
-          }))}
-          columns={[
-            {
-              name: 'ID заявки',
-              backName: 'id',
-            },
-            {
-              name: 'Посетитель',
-              backName: 'visitor',
-            },
-            {
-              name: 'Дата посещения',
-              backName: 'date',
-            },
-            {
-              name: 'Статус',
-              backName: 'status',
-            },
-          ]}
-        />
-      ) : (
-        <p>Ошибка при получении данных</p>
-      )}
-      {visits && (
-        <Pagination
-          selectedView={activeViews}
-          setSelectedView={setActiveViews}
-          activeStage={activePage - 1}
-          totalStages={Math.ceil(visits?.visitRequests.length / activeViews)}
-          changeActiveStage={setActivePage}
-        />
-      )}
-    </div>
+      {isDisplayNewReport && <CreateReport onClose={() => setIsDisplayNewReport(false)} />}
+    </>
   );
 }
 
