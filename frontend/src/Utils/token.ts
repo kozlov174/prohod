@@ -29,7 +29,8 @@ export function setTokensToCookies(
     if (exp === undefined) {
       const tokenData = parseJwt(value);
       if (tokenData) {
-        exp = tokenData.exp;
+        exp = new Date();
+        exp.setHours(exp.getHours() + 1);
       }
     }
     if (exp && typeof exp === 'number') {

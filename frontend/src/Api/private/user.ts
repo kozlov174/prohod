@@ -1,16 +1,15 @@
-import instance, { PagesURl } from '@/Api';
+import { PagesURl, privateInstance } from '@/Api';
 import { CreateUserRequest, PrivateUser } from '@/Models/Auth/api';
-import { UserRole } from '@/Models/Auth/client';
 
 export const getAllUsers = async () => {
-  const response = await instance.get<{ users: PrivateUser[] }>(PagesURl.USER + '/users/');
+  const response = await privateInstance.get<{ users: PrivateUser[] }>(PagesURl.USER + '/users/');
   return response.data;
 };
 
-export async function createUser(role: UserRole, data: CreateUserRequest): Promise<PrivateUser> {
-  return (await instance.post<PrivateUser>(PagesURl.USER + '/users/', { ...data }, { params: { role } })).data;
+export async function createUser(data: CreateUserRequest): Promise<PrivateUser> {
+  return (await privateInstance.post<PrivateUser>(PagesURl.USER + '/users/', { ...data })).data;
 }
 
 export async function getSecurities() {
-  return (await instance.get<PrivateUser[]>(PagesURl.USER + '/securities/')).data;
+  return (await privateInstance.get<{ securities: PrivateUser[] }>(PagesURl.USER + '/securities/')).data;
 }

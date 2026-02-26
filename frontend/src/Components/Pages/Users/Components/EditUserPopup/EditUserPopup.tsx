@@ -1,4 +1,5 @@
 import { JSX, memo, useState } from 'react';
+import styles from './Styles.module.scss';
 import { PrivateUser } from '@/Models/Auth/api';
 import { Popup } from '@/Components/Layouts/Popup';
 import { Input } from '@/Components/UI/Input';
@@ -51,7 +52,7 @@ function EditUserPopupComponent({ user, onClose }: EditUserPopupProps): JSX.Elem
 
   return (
     <Popup displayCloseButton onClose={onClose}>
-      <div>
+      <div className={styles.editUserPopup}>
         <h2>{`${user.surname} ${user.name}`}</h2>
         <Input type="text" label="ФИО" disabled value={`${user.surname} ${user.name}`} onChange={() => {}} />
         <Input type="text" label="Логин" disabled value={user.login} onChange={() => {}} />

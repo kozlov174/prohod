@@ -8,10 +8,10 @@ interface TableProps {
     backName: string;
     isSortable?: boolean;
   }[];
-  data: { [key: string]: string | React.ReactNode }[];
-  onView?: (index: number) => void;
-  onEdit?: (index: number) => void;
-  onDelete?: (index: number) => void;
+  data: ({ [key: string]: string | React.ReactNode } & { id: string })[];
+  onView?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
   onSort?: (column: string) => void;
 }
 
@@ -32,18 +32,18 @@ function TableComponent({ data, columns, onSort, onView, onEdit, onDelete }: Tab
         ))}
       </div>
       {data.map((el, dataIndex) => (
-        <div onClick={onView ? () => onView(dataIndex) : undefined} className={styles.table__line} key={dataIndex}>
+        <div onClick={onEdit ? () => onEdit(el.id) : undefined} className={styles.table__line} key={dataIndex}>
           {Object.entries(el).map(([key, value], index) => (
             <div key={key} className={`${styles.table__item}`}>
               {value}
               {index === columns.length - 1 && (
                 <div className={styles.table__icons}>
-                  {onView && <Icon onClick={() => onView(dataIndex)} pointer glyph="eye" glyphColor="grey" size={24} />}
+                  {onView && <Icon onClick={() => onView(el.id)} pointer glyph="eye" glyphColor="grey" size={24} />}
                   {onEdit && (
                     <Icon
                       onClick={e => {
                         e.stopPropagation();
-                        onEdit(dataIndex);
+                        onEdit(el.id);
                       }}
                       pointer
                       glyph="settings"
@@ -55,7 +55,7 @@ function TableComponent({ data, columns, onSort, onView, onEdit, onDelete }: Tab
                     <Icon
                       onClick={e => {
                         e.stopPropagation();
-                        onDelete(dataIndex);
+                        onDelete(el.id);
                       }}
                       pointer
                       glyph="delete"

@@ -1,0 +1,12 @@
+services:
+  web-private:
+    build:
+      context: .
+      target: production
+    env_file:
+      - .env
+    environment:
+      ASSET_DIR: /usr/share/nginx/html
+      APP: VITE_
+    ports:
+      - '8080:8080'

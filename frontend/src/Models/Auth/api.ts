@@ -31,7 +31,7 @@ export type PrivateUser = User & {
 
 export type GetAllUsersResponse = List<User>;
 
-export type CreateUserRequest = Omit<User, 'login' | 'role'>;
+export type CreateUserRequest = Omit<User, 'role'>;
 
 export type RestorePasswordRequest = {
   login: string;

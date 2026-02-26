@@ -5,7 +5,8 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { logoutUser } from '@/Utils/auth';
 import { camelToSnake, snakeToCamel } from '@/Utils';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL_PUBLIC;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL_PUBLIC || 'http://localhost:8000';
+const PRIVATE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL_PRIVATE || 'http://localhost:8000';
 
 const notify = (message: string) => toast(message);
 
@@ -92,8 +93,17 @@ createAuthRefreshInterceptor(instance, refreshAccessToken, {
 
 instance.interceptors.response.use(responseInterceptors.onSuccess, responseInterceptors.onError);
 
-export const privateInstance = instance.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL_PRIVATE,
+export const privateInstance = axios.create({
+  baseURL: PRIVATE_BACKEND_URL,
+  timeout: REQUEST_TIMEOUT,
+});
+
+privateInstance.interceptors.request.use(requestInterceptors.onSuccess, requestInterceptors.onError);
+privateInstance.interceptors.response.use(responseInterceptors.onSuccess, responseInterceptors.onError);
+
+createAuthRefreshInterceptor(privateInstance, refreshAccessToken, {
+  statusCodes: [401],
+  pauseInstanceWhileRefreshing: true,
 });
 
 export default instance;

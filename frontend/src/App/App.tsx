@@ -29,25 +29,24 @@ function AppComponent() {
       },
     },
   });
-
+  const isPrivate = import.meta.env.VITE_ENABLE_PRIVATE;
+  console.log(import.meta.env.VITE_ENABLE_PRIVATE);
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ToastContainer />
         <Routes>
-          <Route path="/" element={<Main isPublic />} />
-          <Route path="/login" element={<Login isPublic />} />
+          <Route path="/" element={<Main isPublic={isPrivate !== '1'} />} />
+          <Route path="/login" element={<Login isPublic={isPrivate !== '1'} />} />
           <Route path="/enter" element={<Enter />} />
-          <Route path="/admin" element={<Main />} />
-          <Route path="/admin/login" element={<Login />} />
-          <Route path="*" element={<PrivateWrapper />} />
+          <Route path="*" element={<PrivateWrapper isPublic={isPrivate !== '1'} />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
   );
 }
 
-function PrivateWrapper() {
+function PrivateWrapper({ isPublic }: { isPublic: boolean }) {
   const navigate = useNavigate();
   useEffect(() => {
     const accessToken = getTokenFromCookie('access');
@@ -56,7 +55,7 @@ function PrivateWrapper() {
       navigate('/login');
       return;
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <PermissionContext.Provider value={{ user: null }}>
@@ -64,9 +63,8 @@ function PrivateWrapper() {
         <Header />
         <main className={'main'}>
           <Routes>
-            <Route path="/visits" element={<Visits isPublic />} />
-            <Route path="/admin/visits" element={<Visits />} />
-            <Route path="/admin/users" element={<Users />} />
+            <Route path="/visits" element={<Visits isPublic={isPublic} />} />
+            <Route path="/users" element={<Users />} />
           </Routes>
         </main>
       </div>

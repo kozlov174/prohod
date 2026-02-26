@@ -16,6 +16,7 @@ import { Button } from '@/Components/UI/Button';
 import { Link } from 'react-router-dom';
 import { getPaginatedData } from '@/Utils/table';
 import { CreateReport } from '@/Components/Pages/Visits/Components/CreateReport';
+import { getTokenFromCookie, parseJwt } from '@/Utils/token';
 
 interface VisitsProps {
   isPublic?: boolean;
@@ -27,7 +28,7 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   const [selectedStatus, setSelectedStatus] = useState<ListValue>(VISIT_STATUS_LIST[0]);
   const [activePage, setActivePage] = useState(1);
   const [activeViews, setActiveViews] = useState(10);
-
+  const tokenData = parseJwt(getTokenFromCookie('access'));
   const { data: visits, isLoading } = useQuery({
     queryFn: () => {
       if (isPublic) {
@@ -42,22 +43,25 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   useEffect(() => {
     setActivePage(1);
   }, [search]);
-
-  /*   if (isLoading) {
+  if (isLoading) {
     return <Loader size="fullBlock" />;
-  } */
+  }
 
   return (
     <>
       <div className={styles.visits}>
         <h2>Посещения</h2>
         <div className={styles.visits__buttons}>
-          <Link to="/admin/users">
-            <Button size="s">Добавить пользователя</Button>
-          </Link>
-          <Button onClick={() => setIsDisplayNewReport(true)} size="s">
-            Отчеты
-          </Button>
+          {tokenData && (tokenData.role === 'admin' || tokenData?.role === 'security') && (
+            <Link to="/users">
+              <Button size="s">Добавить пользователя</Button>
+            </Link>
+          )}
+          {tokenData && tokenData.role === 'admin' && (
+            <Button onClick={() => setIsDisplayNewReport(true)} size="s">
+              Отчеты
+            </Button>
+          )}
         </div>
         <div className={styles.visits__filters}>
           <Input label="Поиск" placeholder="Поиск" value={search} onChange={setSearch} type="search" />

@@ -1,10 +1,25 @@
 .main {
   display: flex;
-  height: 100%;
-  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
   justify-content: center;
   align-items: center;
   flex: 1;
+  background: var(--light-grey-color);
+
+  &__content {
+    display: flex;
+    width: 80vw;
+    height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #0001;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+  }
 
   &__text {
     margin-top: 20px;

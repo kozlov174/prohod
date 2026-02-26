@@ -10,23 +10,25 @@ interface MainProps {
 function MainComponent({ isPublic }: MainProps): JSX.Element {
   return (
     <div className={styles.main}>
-      <h2>Добро пожаловать на платформу ПроХод</h2>
-      <p className={styles.main__text}>
-        {isPublic
-          ? `Сервис создан для избавления гостей от бумажной работы и постоянных согласований, достаточно заполнить заявку на
+      <div className={styles.main__content}>
+        <h2>Добро пожаловать на платформу ПроХод</h2>
+        <p className={styles.main__text}>
+          {isPublic
+            ? `Сервис создан для избавления гостей от бумажной работы и постоянных согласований, достаточно заполнить заявку на
         сайте и ожидать одобрения в виде QR-кода на указанную почту. Пожалуйста, заполните все поля согласно инструкциям
         на сайте.`
-          : `Панель управления процессом согласования разовых пропусков. Мониторинг статусов, верификация данных и управление доступом.`}
-      </p>
-      <div className={styles.main__buttons}>
-        {isPublic && (
-          <Link to={'/enter'}>
-            <Button>Пройти в ИРИТ-РТФ</Button>
+            : `Панель управления процессом согласования разовых пропусков. Мониторинг статусов, верификация данных и управление доступом.`}
+        </p>
+        <div className={styles.main__buttons}>
+          {isPublic && (
+            <Link to={'/enter'}>
+              <Button>Пройти в ИРИТ-РТФ</Button>
+            </Link>
+          )}
+          <Link to={'/login'}>
+            <Button color="secondary">{isPublic ? 'Авторизация' : 'Войти в систему'}</Button>
           </Link>
-        )}
-        <Link to={isPublic ? '/login' : '/admin/login'}>
-          <Button color="secondary">{isPublic ? 'Авторизация' : 'Войти в систему'}</Button>
-        </Link>
+        </div>
       </div>
     </div>
   );

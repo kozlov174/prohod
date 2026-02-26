@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:public": "cross-env VITE_ENABLE_PRIVATE=0 vite",
+    "dev:private": "cross-env VITE_ENABLE_PRIVATE=1 vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -42,6 +43,7 @@
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-react": "^4.3.4",
     "baseline-browser-mapping": "^2.9.14",
+    "cross-env": "^10.1.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",

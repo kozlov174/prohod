@@ -5,7 +5,7 @@ import styles from './Styles.module.scss';
 import { loginSchema } from './schema';
 import { InferType } from 'yup';
 import { Button } from '@/Components/UI/Button';
-import { setTokensToCookies } from '@/Utils/token';
+import { parseJwt, setTokensToCookies } from '@/Utils/token';
 import { login } from '@/Api/public/auth';
 import { login as privateLogin } from '@/Api/private/auth';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ function LoginComponent({ isPublic }: LoginProps): JSX.Element {
     try {
       const user = isPublic ? await login(data) : await privateLogin(data);
       if (user) {
-        console.log(user);
+        console.log(parseJwt(user.jwtToken));
         setTokensToCookies(user.jwtToken, 'access', {}, !data.remember);
         navigate('/visits');
       }
@@ -78,7 +78,7 @@ function LoginComponent({ isPublic }: LoginProps): JSX.Element {
           )}
         />
         <div className={styles.container__buttons}>
-          <Link to={isPublic ? '/' : '/admin'}>
+          <Link to={'/'}>
             <Button type="button" size="s" color="secondary" fullWidth>
               {'На главную'}
             </Button>
