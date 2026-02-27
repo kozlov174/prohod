@@ -6,11 +6,13 @@ import { formatFileSize } from '@/Utils';
 type FileInputProps = {
   file: File;
   onUploadFile: (file: File) => void;
+  label?: string;
 };
 
-export const FileInputComponent = ({ file, onUploadFile }: FileInputProps) => {
+export const FileInputComponent = ({ file, label, onUploadFile }: FileInputProps) => {
   return (
     <div className={styles.container}>
+      {label && <p className={styles.container__label}>{label}</p>}
       <Input onUploadFile={onUploadFile} />
       {file && (
         <div className={styles.container__list}>
@@ -51,7 +53,6 @@ function Input({ onUploadFile }: InputProps) {
 
   const addFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
-    console.log(e.target.files[0]);
     onUploadFile(e.target.files[0]);
   };
 
@@ -82,7 +83,6 @@ function Input({ onUploadFile }: InputProps) {
 }
 
 function File({ file }: { file: File }) {
-  console.log(file);
   return (
     <div className={styles.file}>
       <div className={styles.file__info}>

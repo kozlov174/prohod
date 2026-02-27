@@ -21,6 +21,8 @@ type InputProps = (
   pseudoContent?: string;
   name?: string;
   disabled?: boolean;
+  min?: string;
+  max?: string;
   error?: string;
 };
 
@@ -30,6 +32,8 @@ function InputComponent({
   placeholder,
   onChange,
   className,
+  max,
+  min,
   label,
   pseudoContent,
   disabled,
@@ -70,6 +74,8 @@ function InputComponent({
       >
         {type === 'search' && <Icon className={styles.input__search} glyph="search" size={20} glyphColor="blue" />}
         <input
+          max={max}
+          min={min}
           disabled={disabled}
           ref={inputRef}
           name={name}

@@ -13,7 +13,7 @@ import { Loader } from '@/Components/UI/Loader';
 import { getPrettyDate } from '@/Utils/date';
 import { Pagination } from '@/Components/Widgets/Pagination';
 import { Button } from '@/Components/UI/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getPaginatedData } from '@/Utils/table';
 import { CreateReport } from '@/Components/Pages/Visits/Components/CreateReport';
 import { getTokenFromCookie, parseJwt } from '@/Utils/token';
@@ -23,6 +23,7 @@ interface VisitsProps {
 }
 
 function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [isDisplayNewReport, setIsDisplayNewReport] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ListValue>(VISIT_STATUS_LIST[0]);
@@ -75,6 +76,7 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
         </div>
         {visits ? (
           <Table
+            onEdit={id => navigate('/visits/' + id)}
             data={getPaginatedData(visits.visitRequests, activePage, activeViews, search).map(el => ({
               id: el.id,
               visitor: el.form.passportFullName,

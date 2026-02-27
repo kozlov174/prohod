@@ -1,0 +1,22 @@
+.visitRequest {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__mainButtons {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+.popup {
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px
+}

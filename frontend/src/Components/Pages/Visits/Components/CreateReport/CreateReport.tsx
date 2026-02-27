@@ -8,6 +8,7 @@ import { createReportSchema } from '@/Components/Pages/Visits/Components/CreateR
 import { Button } from '@/Components/UI/Button';
 import { InferType } from 'yup';
 import { getExcelReport, getJsonReport } from '@/Api/private/report';
+import { downloadFile } from '@/Components/Pages/Visits/Components/CreateReport/utils';
 
 interface CreateReportProps {
   onClose: () => void;
@@ -32,9 +33,11 @@ function CreateReportComponent({ onClose }: CreateReportProps): JSX.Element {
     submitButton.current?.click();
   };
 
-  const onSubmit = (data: InferType<typeof createReportSchema>) => {
+  const onSubmit = async (data: InferType<typeof createReportSchema>) => {
     if (data.reportType === 'json') {
-      getJsonReport(data.startDate, data.endDate);
+      const response = await getJsonReport(data.startDate, data.endDate);
+      const jsonString = JSON.stringify(response.data, null, 2);
+      downloadFile(jsonString, 'application/json', `${data.startDate}-${data.endDate}-report.json`);
     } else {
       getExcelReport(data.startDate, data.endDate);
     }
@@ -73,10 +76,10 @@ function CreateReportComponent({ onClose }: CreateReportProps): JSX.Element {
           />
         </div>
         <Button onClick={onCreateJSON} size="s">
-          Скчать отчет в JSON
+          Скачать отчет в JSON
         </Button>
         <Button onClick={onCreateEXCEL} size="s">
-          Скчать отчет в EXCEL
+          Скачать отчет в EXCEL
         </Button>
         <button type="submit" ref={submitButton} style={{ display: 'none' }} />
       </form>

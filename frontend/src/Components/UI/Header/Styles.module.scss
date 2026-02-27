@@ -18,4 +18,10 @@
   &__logo {
     cursor: pointer;
   }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 }

@@ -5,12 +5,13 @@ import styles from './Styles.module.scss';
 import { loginSchema } from './schema';
 import { InferType } from 'yup';
 import { Button } from '@/Components/UI/Button';
-import { parseJwt, setTokensToCookies } from '@/Utils/token';
+import { setTokensToCookies } from '@/Utils/token';
 import { login } from '@/Api/public/auth';
 import { login as privateLogin } from '@/Api/private/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/Components/UI/Checkbox';
 import { Input } from '@/Components/UI/Input';
+import { useMutation } from '@tanstack/react-query';
 
 interface LoginProps {
   isPublic?: boolean;
@@ -22,12 +23,14 @@ function LoginComponent({ isPublic }: LoginProps): JSX.Element {
     resolver: yupResolver(loginSchema),
     defaultValues: { remember: false },
   });
+  const loginMutation = useMutation({
+    mutationFn: isPublic ? login : privateLogin,
+  });
 
   const onSubmit = async (data: InferType<typeof loginSchema>) => {
     try {
-      const user = isPublic ? await login(data) : await privateLogin(data);
+      const user = await loginMutation.mutateAsync({ login: data.login, password: data.password });
       if (user) {
-        console.log(parseJwt(user.jwtToken));
         setTokensToCookies(user.jwtToken, 'access', {}, !data.remember);
         navigate('/visits');
       }
@@ -83,8 +86,8 @@ function LoginComponent({ isPublic }: LoginProps): JSX.Element {
               {'На главную'}
             </Button>
           </Link>
-          <Button type="submit" size="ss" fullWidth color="blue">
-            {'Войти'}
+          <Button disabled={loginMutation.isPending} type="submit" size="ss" fullWidth color="blue">
+            {loginMutation.isPending ? 'Вход...' : 'Войти'}
           </Button>
         </div>
       </form>

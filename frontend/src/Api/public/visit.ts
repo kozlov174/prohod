@@ -18,6 +18,6 @@ export async function acceptVisitRequest(visitId: string) {
   await instance.post(PagesURl.VISIT_FOR_USERS + visitId + '/accept');
 }
 
-export async function rejectVisitRequest(visitId: string) {
-  await instance.post(PagesURl.VISIT_FOR_USERS + visitId + '/reject');
+export async function rejectVisitRequest(visitId: string, rejectionReason: string) {
+  await instance.post(PagesURl.VISIT_FOR_USERS + visitId + '/reject', { rejectionReason });
 }

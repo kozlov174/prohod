@@ -14,6 +14,7 @@ import { Main } from '@/Components/Pages/Main';
 import { Visits } from '@/Components/Pages/Visits';
 import { Enter } from '@/Components/Pages/Enter';
 import { Users } from '@/Components/Pages/Users';
+import { VisitRequest } from '@/Components/Pages/VisitRequest';
 
 function AppComponent() {
   const queryClient = new QueryClient({
@@ -30,18 +31,19 @@ function AppComponent() {
     },
   });
   const isPrivate = import.meta.env.VITE_ENABLE_PRIVATE;
-  console.log(import.meta.env.VITE_ENABLE_PRIVATE);
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<Main isPublic={isPrivate !== '1'} />} />
-          <Route path="/login" element={<Login isPublic={isPrivate !== '1'} />} />
-          <Route path="/enter" element={<Enter />} />
-          <Route path="*" element={<PrivateWrapper isPublic={isPrivate !== '1'} />} />
-        </Routes>
-      </BrowserRouter>
+      <PermissionContext.Provider value={{ isPublic: !isPrivate }}>
+        <BrowserRouter>
+          <ToastContainer />
+          <Routes>
+            <Route path="/" element={<Main isPublic={isPrivate !== '1'} />} />
+            <Route path="/login" element={<Login isPublic={isPrivate !== '1'} />} />
+            <Route path="/enter" element={<Enter />} />
+            <Route path="*" element={<PrivateWrapper isPublic={isPrivate !== '1'} />} />
+          </Routes>
+        </BrowserRouter>
+      </PermissionContext.Provider>
     </QueryClientProvider>
   );
 }
@@ -58,17 +60,16 @@ function PrivateWrapper({ isPublic }: { isPublic: boolean }) {
   }, [navigate]);
 
   return (
-    <PermissionContext.Provider value={{ user: null }}>
-      <div className={'container'}>
-        <Header />
-        <main className={'main'}>
-          <Routes>
-            <Route path="/visits" element={<Visits isPublic={isPublic} />} />
-            <Route path="/users" element={<Users />} />
-          </Routes>
-        </main>
-      </div>
-    </PermissionContext.Provider>
+    <div className={'container'}>
+      <Header isPublic={isPublic} />
+      <main className={'main'}>
+        <Routes>
+          <Route path="/visits" element={<Visits isPublic={isPublic} />} />
+          <Route path="/visits/:id" element={<VisitRequest isPublic={isPublic} />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 

@@ -2,6 +2,9 @@ FROM node as development
 
 WORKDIR /usr/src/app
 
+ARG VITE_ENABLE_PRIVATE
+ENV VITE_ENABLE_PRIVATE=$VITE_ENABLE_PRIVATE
+
 COPY package.json .
 
 RUN npm install

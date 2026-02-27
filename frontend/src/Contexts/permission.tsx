@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 
 interface TPermission {
-  user: null;
+  isPublic: boolean;
 }
 
 export const PermissionContext = createContext<TPermission>({
-  user: null,
+  isPublic: true,
 });

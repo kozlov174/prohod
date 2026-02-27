@@ -15,7 +15,7 @@ export const PagesURl = {
   USER: '/users',
   VISIT_FOR_USERS: '/visit-requests-for-users/visit-requests/',
   VISIT_FOR_SECURITY: '/visit-requests-for-security/visit-requests/',
-  VERIFY_EMAIL: '/users/verify_email',
+  VERIFY_EMAIL: '/verify_email',
   REPORT: '/reports',
 };
 

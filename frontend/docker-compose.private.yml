@@ -3,6 +3,8 @@ services:
     build:
       context: .
       target: production
+      args:
+        VITE_ENABLE_PRIVATE: '1'
     env_file:
       - .env
     environment:

@@ -48,7 +48,7 @@ function TableComponent({ data, columns, onSort, onView, onEdit, onDelete }: Tab
                       pointer
                       glyph="settings"
                       glyphColor="grey"
-                      size={24}
+                      size={20}
                     />
                   )}
                   {onDelete && (
@@ -60,7 +60,7 @@ function TableComponent({ data, columns, onSort, onView, onEdit, onDelete }: Tab
                       pointer
                       glyph="delete"
                       glyphColor="red"
-                      size={24}
+                      size={20}
                     />
                   )}
                 </div>

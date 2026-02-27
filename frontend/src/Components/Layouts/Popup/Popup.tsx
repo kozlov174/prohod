@@ -7,11 +7,13 @@ const PopupComponent = ({
   children,
   onClose,
   displayCloseButton,
+  padding,
 }: {
   children: React.ReactNode;
   onClose?: () => void;
   displayCloseButton?: boolean;
   radius?: number;
+  padding?: number;
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +36,11 @@ const PopupComponent = ({
   return (
     <div className={styles.container}>
       <div className={styles.container__wrapper}>
-        <div ref={popupRef} className={`${styles.container__content}`}>
+        <div
+          style={{ padding: padding ? `${padding}px` : '0' }}
+          ref={popupRef}
+          className={`${styles.container__content}`}
+        >
           {children}
         </div>
         {displayCloseButton && (
