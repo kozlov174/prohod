@@ -140,13 +140,13 @@ def accept_visit_request(
     # Проверяем роль пользователя и проставляем соответствующее поле
     if current_user["role"] == "user":
         request.who_processed_user_id = current_user["user_id"]
+        request.status = VisitRequestStatusEnum.user_accept
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to perform this action"
         )
     email = request.form.email_to_send_reply
     sender = EmailQrCodeSender()
-    # Обновляем статус заявки в зависимости от действий обоих пользователей
     if request.who_processed_user_id and request.who_processed_security_id:
         if request.status != VisitRequestStatusEnum.reject:
             request.status = VisitRequestStatusEnum.accept

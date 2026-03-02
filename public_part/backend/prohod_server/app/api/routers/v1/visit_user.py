@@ -136,10 +136,9 @@ def accept_visit_request(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Request not found"
         )
-    #request_for_user = db.query(User).filter(User.id == current_user.id).first()
-    # Проверяем роль пользователя и проставляем соответствующее поле
     if current_user["role"] == "user":
         request.who_processed_user_id = current_user["user_id"]
+        request.status = VisitRequestStatusEnum.user_accept
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to perform this action"

@@ -18,6 +18,7 @@ class VisitRequestStatusEnum(enum.Enum):
     not_processed = "not_processed"
     reject = "reject"
     accept = "accept"
+    user_accept = "user_accept"
 
 class EmailRequestStatusEnum(enum.Enum):
     active = "active"
