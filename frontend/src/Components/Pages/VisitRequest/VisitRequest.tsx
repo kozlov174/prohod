@@ -11,12 +11,13 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { Loader } from '@/Components/UI/Loader';
 import { getPrettyDate } from '@/Utils/date';
-import { VISIT_STATUS } from '@/Components/Pages/Visits/const';
+import { USER_VISIT_STATUS, UB_VISIT_STATUS } from '@/Components/Pages/Visits/const';
 import { Button } from '@/Components/UI/Button';
 import { toast } from 'react-toastify';
 import { Popup } from '@/Components/Layouts/Popup';
 import { getMe } from '@/Api/public/auth';
 import { getMe as privateGetMe } from '@/Api/private/auth';
+import { VisitStatus } from '@/Models/Visit/client';
 
 interface VisitRequestProps {
   isPublic: boolean;
@@ -57,6 +58,11 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
     },
   });
 
+  const isVisibleButtons = (status: VisitStatus) => {
+    console.log(status, me?.role);
+    return (status === 'not_processed' && me?.role === 'user') || (status === 'user_accept' && me?.role === 'security');
+  };
+
   if (isLoading) {
     return <Loader size="fullBlock" />;
   }
@@ -64,6 +70,8 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
   if (!visit || !me) {
     return <h2>Ошибка при получении данных</h2>;
   }
+
+  console.log(visit);
 
   return (
     <>
@@ -77,12 +85,22 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
           value={getPrettyDate(visit.form.visitTime)}
         />
         <Input disabled label="Причина" onChange={() => {}} type="text" value={visit.form.visitReason} />
-        <Input disabled label="Статус" onChange={() => {}} type="text" value={VISIT_STATUS[visit.status]} />
+        <Input
+          disabled
+          label="Статус"
+          onChange={() => {}}
+          type="text"
+          value={
+            isPublic
+              ? USER_VISIT_STATUS[visit.status as keyof typeof USER_VISIT_STATUS]
+              : UB_VISIT_STATUS[visit.status as keyof typeof UB_VISIT_STATUS]
+          }
+        />
         <div className={styles.visitRequest__buttons}>
           <Button onClick={() => navigate('/visits')} size="s" color="secondary">
             Назад
           </Button>
-          {visit.status === 'not_processed' && (me.role === 'security' || me.role === 'user') && (
+          {isVisibleButtons(visit.status) && (
             <div className={styles.visitRequest__mainButtons}>
               <Button
                 disabled={rejectVisitRequestMutation.isPending || acceptVisitRequestMutation.isPending}

@@ -63,8 +63,6 @@ const responseInterceptors = {
         }
         break;
       case 403:
-        toast('Ошибка доступа');
-        window.location.href = '/';
         break;
       case 409:
         if (error.response?.data?.detail) {
@@ -81,7 +79,6 @@ const responseInterceptors = {
 
 async function refreshAccessToken() {
   logoutUser();
-  window.location.href = '/login';
 }
 
 instance.interceptors.request.use(requestInterceptors.onSuccess, requestInterceptors.onError);

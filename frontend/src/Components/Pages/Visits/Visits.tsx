@@ -3,7 +3,7 @@ import styles from './Styles.module.scss';
 import { Input } from '@/Components/UI/Input';
 import { Select } from '@/Components/UI/Select';
 import { ListValue } from '@/Components/UI/Select/types';
-import { VISIT_STATUS, VISIT_STATUS_LIST } from './const';
+import { UB_VISIT_STATUS, UB_VISIT_STATUS_LIST, USER_VISIT_STATUS, USER_VISIT_STATUS_LIST } from './const';
 import { Table } from '@/Components/Widgets/Table';
 import { useQuery } from '@tanstack/react-query';
 import { getVisitRequestsByStatus } from '@/Api/public/visit';
@@ -24,9 +24,16 @@ interface VisitsProps {
 
 function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   const navigate = useNavigate();
+  const VISIT_STATUS_LIST = isPublic ? USER_VISIT_STATUS_LIST : UB_VISIT_STATUS_LIST;
+  const VISIT_STATUS = isPublic ? USER_VISIT_STATUS : UB_VISIT_STATUS;
+  const savedVisitStatus = sessionStorage.getItem('visitStatus');
   const [search, setSearch] = useState('');
   const [isDisplayNewReport, setIsDisplayNewReport] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<ListValue>(VISIT_STATUS_LIST[0]);
+  const [selectedStatus, setSelectedStatus] = useState<ListValue>(
+    savedVisitStatus
+      ? VISIT_STATUS_LIST.find(item => item.id === savedVisitStatus) || VISIT_STATUS_LIST[0]
+      : VISIT_STATUS_LIST[0]
+  );
   const [activePage, setActivePage] = useState(1);
   const [activeViews, setActiveViews] = useState(10);
   const tokenData = parseJwt(getTokenFromCookie('access'));
@@ -44,6 +51,11 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
   useEffect(() => {
     setActivePage(1);
   }, [search]);
+
+  useEffect(() => {
+    sessionStorage.setItem('visitStatus', selectedStatus.id);
+  }, [selectedStatus.id]);
+
   if (isLoading) {
     return <Loader size="fullBlock" />;
   }
@@ -81,7 +93,7 @@ function VisitsComponent({ isPublic }: VisitsProps): JSX.Element {
               id: el.id,
               visitor: el.form.passportFullName,
               date: getPrettyDate(el.form.visitTime),
-              status: VISIT_STATUS[el.status],
+              status: VISIT_STATUS[el.status as keyof typeof VISIT_STATUS],
             }))}
             columns={[
               {

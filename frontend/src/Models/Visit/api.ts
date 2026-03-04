@@ -1,4 +1,4 @@
-import { VisitStatus } from '@/Models/Visit/client';
+import { UB_VISIT_STATUS, USER_VISIT_STATUS } from '@/Components/Pages/Visits/const';
 
 export type CreateVisitRequest = {
   form: {
@@ -24,7 +24,7 @@ export type VisitRequest = {
     visitReason: string;
     emailToSendReply: string;
   };
-  status: VisitStatus;
+  status: keyof typeof USER_VISIT_STATUS | keyof typeof UB_VISIT_STATUS;
 };
 export type GetVisitsResponse = {
   visitRequests: VisitRequest[];

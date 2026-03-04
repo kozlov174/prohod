@@ -39,7 +39,12 @@ function CreateReportComponent({ onClose }: CreateReportProps): JSX.Element {
       const jsonString = JSON.stringify(response.data, null, 2);
       downloadFile(jsonString, 'application/json', `${data.startDate}-${data.endDate}-report.json`);
     } else {
-      getExcelReport(data.startDate, data.endDate);
+      const response = await getExcelReport(data.startDate, data.endDate);
+      downloadFile(
+        response.data,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        `${data.startDate}-${data.endDate}-report.xlsx`
+      );
     }
   };
 

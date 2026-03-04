@@ -181,8 +181,8 @@ function EnterComponent(): JSX.Element {
                   onChange={val => field.onChange(Number(val.toString().slice(0, 4)))}
                   error={enterForm.formState.errors[field.name]?.message}
                   value={field.value}
-                  label="Номер паспорта"
-                  placeholder="Введите номер паспорта"
+                  label="Серия паспорта"
+                  placeholder="Введите серию паспорта"
                 />
               )}
             />
