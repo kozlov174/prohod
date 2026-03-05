@@ -1,5 +1,4 @@
 .container {
-  width: 454px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -68,12 +67,13 @@
 
 .file {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
+  grid-template-columns: 1fr auto;
   column-gap: 12px;
   padding: 12px 8px;
-  align-items: center;
-  cursor: pointer;
+
+  &__info {
+    cursor: pointer;
+  }
 
   &:not(:last-child) {
     border-bottom: 1px solid var(--black-2-color);
@@ -94,8 +94,8 @@
 
   &__about {
     min-height: 24px;
-    display: grid;
-    grid-template-columns: 1fr auto auto;
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
     column-gap: 8px;
   }

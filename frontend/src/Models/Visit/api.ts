@@ -20,6 +20,11 @@ export type VisitRequest = {
   form: {
     userToVisitId: string;
     passportFullName: string;
+    passportIssueDate: string;
+    passportNumber: string;
+    passportPhoto: string;
+    passportSeries: string;
+    passportWhoIssued: string;
     visitTime: string;
     visitReason: string;
     emailToSendReply: string;

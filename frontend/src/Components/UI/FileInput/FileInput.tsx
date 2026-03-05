@@ -2,22 +2,26 @@ import React, { memo, useRef, useState } from 'react';
 import styles from './Styles.module.scss';
 import { Icon } from '@/Components/UI/Icon';
 import { formatFileSize } from '@/Utils';
+import { displayImage, downloadFile } from '@/Components/UI/FileInput/utils';
 
 type FileInputProps = {
   file: File;
   onUploadFile: (file: File) => void;
+  onDeleteFile: () => void;
   label?: string;
+  disabled?: boolean;
 };
 
-export const FileInputComponent = ({ file, label, onUploadFile }: FileInputProps) => {
+export const FileInputComponent = ({ file, label, disabled, onUploadFile, onDeleteFile }: FileInputProps) => {
   return (
     <div className={styles.container}>
       {label && <p className={styles.container__label}>{label}</p>}
-      <Input onUploadFile={onUploadFile} />
-      {file && (
+      {file && file.size ? (
         <div className={styles.container__list}>
-          <File file={file} />
+          <File disabled={disabled} onDeleteFile={onDeleteFile} file={file} />
         </div>
+      ) : (
+        <Input onUploadFile={onUploadFile} />
       )}
     </div>
   );
@@ -82,16 +86,16 @@ function Input({ onUploadFile }: InputProps) {
   );
 }
 
-function File({ file }: { file: File }) {
+function File({ file, disabled, onDeleteFile }: { file: File; disabled?: boolean; onDeleteFile: () => void }) {
   return (
     <div className={styles.file}>
-      <div className={styles.file__info}>
+      <div onClick={() => downloadFile(file)} className={styles.file__info}>
+        <img src={displayImage(file)} />
         <div className={styles.file__about}>
-          <p className={styles.file__name}>{file.name}</p>
           <p className={styles.file__size}>{`${formatFileSize(file.size)}`}</p>
-          <Icon size={24} glyph="close" pointer glyphColor="red" />
         </div>
       </div>
+      {!disabled && <Icon onClick={onDeleteFile} size={24} glyph="close" pointer glyphColor="red" />}
     </div>
   );
 }

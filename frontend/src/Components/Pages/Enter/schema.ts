@@ -13,6 +13,7 @@ export const enterFormSchema = yup.object().shape({
   visitDate: yup.string().required('Введите дату визита'),
   visitReason: yup.string().required('Введите цель визита'),
   emailToSendReply: yup.string().required('Введите почту').email('Введите корректную почту'),
+  isCheckedEmail: yup.boolean().default(false),
   isGetApproval: yup
     .boolean()
     .test('isGetApproval', 'Вы должны согласиться с политикой обработки персональных данных', value => value === true),

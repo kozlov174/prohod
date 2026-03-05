@@ -18,6 +18,8 @@ import { Popup } from '@/Components/Layouts/Popup';
 import { getMe } from '@/Api/public/auth';
 import { getMe as privateGetMe } from '@/Api/private/auth';
 import { VisitStatus } from '@/Models/Visit/client';
+import { Enter } from '@/Components/Pages/Enter';
+import { resetFormFromStorage } from '@/Components/Pages/Enter/utils';
 
 interface VisitRequestProps {
   isPublic: boolean;
@@ -43,6 +45,7 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
       toast.success('Визит принят');
       queryClient.invalidateQueries({ queryKey: ['visits'] });
       queryClient.invalidateQueries({ queryKey: ['visit', id] });
+      resetFormFromStorage();
     },
   });
   const rejectVisitRequestMutation = useMutation({
@@ -55,6 +58,7 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
       setRejectReason(null);
       queryClient.invalidateQueries({ queryKey: ['visits'] });
       queryClient.invalidateQueries({ queryKey: ['visit', id] });
+      resetFormFromStorage();
     },
   });
 
@@ -76,28 +80,41 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
   return (
     <>
       <div className={styles.visitRequest}>
-        <h2>Детали визита</h2>
-        <Input
-          disabled
-          label="Время посещения"
-          onChange={() => {}}
-          type="text"
-          value={getPrettyDate(visit.form.visitTime)}
-        />
-        <Input disabled label="Причина" onChange={() => {}} type="text" value={visit.form.visitReason} />
-        <Input
-          disabled
-          label="Статус"
-          onChange={() => {}}
-          type="text"
-          value={
-            isPublic
-              ? USER_VISIT_STATUS[visit.status as keyof typeof USER_VISIT_STATUS]
-              : UB_VISIT_STATUS[visit.status as keyof typeof UB_VISIT_STATUS]
-          }
-        />
+        {isPublic ? (
+          <div className={styles.visitRequest__content}>
+            <h2>Детали визита</h2>
+            <Input
+              disabled
+              label="Время посещения"
+              onChange={() => {}}
+              type="text"
+              value={getPrettyDate(visit.form.visitTime)}
+            />
+            <Input disabled label="Причина" onChange={() => {}} type="text" value={visit.form.visitReason} />
+            <Input
+              disabled
+              label="Статус"
+              onChange={() => {}}
+              type="text"
+              value={
+                isPublic
+                  ? USER_VISIT_STATUS[visit.status as keyof typeof USER_VISIT_STATUS]
+                  : UB_VISIT_STATUS[visit.status as keyof typeof UB_VISIT_STATUS]
+              }
+            />
+          </div>
+        ) : (
+          <Enter oldData={visit} />
+        )}
         <div className={styles.visitRequest__buttons}>
-          <Button onClick={() => navigate('/visits')} size="s" color="secondary">
+          <Button
+            onClick={() => {
+              resetFormFromStorage();
+              navigate('/visits');
+            }}
+            size="s"
+            color="secondary"
+          >
             Назад
           </Button>
           {isVisibleButtons(visit.status) && (

@@ -15,13 +15,23 @@ import { getAllUsers } from '@/Api/public/user';
 import { convertToBase64, pluralize } from '@/Utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileInput } from '@/Components/UI/FileInput';
-import { parse, formatISO, set } from 'date-fns';
+import { parse, formatISO, set, format } from 'date-fns';
 import { InferType } from 'yup';
 import { createVisitRquest } from '@/Api/public/visit';
 import { Loader } from '@/Components/UI/Loader';
-import { getFileFromSessionStorage, saveFileToSessionStorage } from '@/Components/Pages/Enter/utils';
+import {
+  base64ToFile,
+  getFileFromSessionStorage,
+  resetFormFromStorage,
+  saveFileToSessionStorage,
+} from '@/Components/Pages/Enter/utils';
+import { VisitRequest } from '@/Models/Visit/api';
 
-function EnterComponent(): JSX.Element {
+interface EnterProps {
+  oldData?: VisitRequest;
+}
+
+function EnterComponent({ oldData }: EnterProps): JSX.Element {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: users, isLoading } = useQuery({
@@ -34,7 +44,7 @@ function EnterComponent(): JSX.Element {
       toast.success('Заявка отправлена');
       queryClient.invalidateQueries({ queryKey: ['visits'] });
       enterForm.reset();
-      sessionStorage.clear();
+      resetFormFromStorage();
       navigate('/');
     },
   });
@@ -46,7 +56,6 @@ function EnterComponent(): JSX.Element {
   const [sendedEmail, setSendedEmail] = useState<string>();
 
   const [code, setCode] = useState<string>();
-  const [isCodeDone, setIsCodeDone] = useState<boolean>(false);
 
   const [timer, setTimer] = useState<number>();
 
@@ -72,7 +81,7 @@ function EnterComponent(): JSX.Element {
     }
     try {
       await verifyEmail(sendedEmail, code);
-      setIsCodeDone(true);
+      enterForm.setValue('isCheckedEmail', true);
     } catch {
       toast.error('Неверный код');
     }
@@ -146,22 +155,46 @@ function EnterComponent(): JSX.Element {
     }
   }, [enterForm.watch()]);
 
+  useEffect(() => {
+    if (users && oldData) {
+      const user = users.users.find(user => user.id === oldData.form.userToVisitId);
+      if (!user) return;
+      enterForm.reset({
+        ...oldData.form,
+        passportNumber: Number(oldData.form.passportNumber),
+        passportSeries: Number(oldData.form.passportSeries),
+        passportPhoto: base64ToFile(oldData.form.passportPhoto, 'passportPhoto'),
+        userToVisit: { id: user.id, value: user.name },
+        passportIssueDate: format(new Date(oldData.form.passportIssueDate), 'yyyy-MM-dd'),
+        visitDate: format(new Date(oldData.form.visitTime), 'yyyy-MM-dd'),
+        visitTime: format(new Date(oldData.form.visitTime), 'HH:mm'),
+      });
+    }
+  }, [users]);
+
   return (
     <div className={styles.container}>
       {isLoading ? (
         <Loader size="fullBlock" />
       ) : (
         <form className={styles.container__form} onSubmit={enterForm.handleSubmit(onSubmit)}>
-          <Link to="/">
-            <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
-          </Link>
-          <h2 className={styles.container__title}>{'Проход'}</h2>
-          <p>1. Заполните паспортные данные</p>
+          {!oldData ? (
+            <>
+              <Link to="/">
+                <img src="/logo.svg" alt="УрФУ" className={styles.container__logo} />
+              </Link>
+              <h2 className={styles.container__title}>{'Проход'}</h2>
+              <p>1. Заполните паспортные данные</p>
+            </>
+          ) : (
+            <h2>Детали визита</h2>
+          )}
           <Controller
             name="passportFullName"
             control={enterForm.control}
             render={({ field }) => (
               <Input
+                disabled={!!oldData}
                 type="text"
                 onChange={field.onChange}
                 error={enterForm.formState.errors[field.name]?.message}
@@ -177,6 +210,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="number"
                   onChange={val => field.onChange(Number(val.toString().slice(0, 4)))}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -191,6 +225,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="number"
                   onChange={val => field.onChange(Number(val.toString().slice(0, 6)))}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -207,6 +242,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="text"
                   onChange={val => field.onChange(val.toString().slice(0, 7))}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -221,6 +257,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="date"
                   onChange={field.onChange}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -237,8 +274,10 @@ function EnterComponent(): JSX.Element {
             control={enterForm.control}
             render={({ field }) => (
               <FileInput
-                label="Прикрепите файл"
+                disabled={!!oldData}
+                label={oldData ? 'Фото паспорта' : 'Прикрепите файл'}
                 file={field.value}
+                onDeleteFile={() => field.onChange(null)}
                 onUploadFile={val => {
                   field.onChange(val);
                 }}
@@ -252,6 +291,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="date"
                   onChange={field.onChange}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -267,6 +307,7 @@ function EnterComponent(): JSX.Element {
               control={enterForm.control}
               render={({ field }) => (
                 <Input
+                  disabled={!!oldData}
                   type="time"
                   onChange={field.onChange}
                   error={enterForm.formState.errors[field.name]?.message}
@@ -282,6 +323,7 @@ function EnterComponent(): JSX.Element {
             control={enterForm.control}
             render={({ field }) => (
               <Select
+                disabled={!!oldData}
                 type="single"
                 onChange={field.onChange}
                 error={enterForm.formState.errors[field.name]?.message}
@@ -297,6 +339,7 @@ function EnterComponent(): JSX.Element {
             control={enterForm.control}
             render={({ field }) => (
               <Input
+                disabled={!!oldData}
                 type="text"
                 onChange={field.onChange}
                 error={enterForm.formState.errors[field.name]?.message}
@@ -306,69 +349,73 @@ function EnterComponent(): JSX.Element {
               />
             )}
           />
-          <p>3. Куда придет QR-код для посещения</p>
-          <div className={cn(styles.container__email, sendedEmail && styles.container__email_active)}>
-            <Controller
-              name="emailToSendReply"
-              control={enterForm.control}
-              render={({ field }) => (
-                <Input
-                  type="text"
-                  onChange={field.onChange}
-                  error={enterForm.formState.errors[field.name]?.message}
-                  value={field.value}
-                  label="Куда придет код для посещения"
-                  placeholder="Введите email"
-                />
-              )}
-            />
-            {!!sendedEmail || (
-              <div className={styles.container__send}>
-                <Button onClick={onSendCode} size="s">
-                  Отправить код
-                </Button>
-              </div>
-            )}
-          </div>
-          {sendedEmail && !isCodeDone && (
+          {!oldData && (
             <>
-              <div className={cn(styles.container__code)}>
-                <Input type="text" onChange={setCode} value={code || ''} label="Введите код" placeholder="код" />
-                <div className={styles.container__send}>
-                  <Button onClick={onVerifyCode} size="s">
-                    Подтвердить код
+              <p>3. Куда придет QR-код для посещения</p>
+              <div className={cn(styles.container__email, sendedEmail && styles.container__email_active)}>
+                <Controller
+                  name="emailToSendReply"
+                  control={enterForm.control}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      onChange={field.onChange}
+                      error={enterForm.formState.errors[field.name]?.message}
+                      value={field.value}
+                      label="Куда придет код для посещения"
+                      placeholder="Введите email"
+                    />
+                  )}
+                />
+                {!!sendedEmail || (
+                  <div className={styles.container__send}>
+                    <Button onClick={onSendCode} size="s">
+                      Отправить код
+                    </Button>
+                  </div>
+                )}
+              </div>
+              {sendedEmail && !enterForm.getValues('isCheckedEmail') && (
+                <>
+                  <div className={cn(styles.container__code)}>
+                    <Input type="text" onChange={setCode} value={code || ''} label="Введите код" placeholder="код" />
+                    <div className={styles.container__send}>
+                      <Button onClick={onVerifyCode} size="s">
+                        Подтвердить код
+                      </Button>
+                    </div>
+                  </div>
+                  <span>
+                    {`Код отправлен на ${sendedEmail}`}{' '}
+                    {timer ? (
+                      <span>{`отправить повторно через ${pluralize(timer, { 1: 'секунду', 2: 'секунды', 3: 'секунды', 4: 'секунды', 5: 'секунд' })}`}</span>
+                    ) : (
+                      <span onClick={onSendCode} className={styles.container__repeat}>
+                        отправить повторно
+                      </span>
+                    )}
+                  </span>
+                </>
+              )}
+              {enterForm.getValues('isCheckedEmail') && (
+                <div className={styles.container__sendBlock}>
+                  <Controller
+                    name="isGetApproval"
+                    control={enterForm.control}
+                    render={({ field }) => (
+                      <Checkbox
+                        onChange={() => field.onChange(!field.value)}
+                        isActive={field.value}
+                        label="Даю согласие на обработку персональных данных"
+                      />
+                    )}
+                  />
+                  <Button type="submit" size="s">
+                    Отправить заявку
                   </Button>
                 </div>
-              </div>
-              <span>
-                {`Код отправлен на ${sendedEmail}`}{' '}
-                {timer ? (
-                  <span>{`отправить повторно через ${pluralize(timer, { 1: 'секунду', 2: 'секунды', 3: 'секунды', 4: 'секунды', 5: 'секунд' })}`}</span>
-                ) : (
-                  <span onClick={onSendCode} className={styles.container__repeat}>
-                    отправить повторно
-                  </span>
-                )}
-              </span>
+              )}
             </>
-          )}
-          {isCodeDone && (
-            <div className={styles.container__sendBlock}>
-              <Controller
-                name="isGetApproval"
-                control={enterForm.control}
-                render={({ field }) => (
-                  <Checkbox
-                    onChange={() => field.onChange(!field.value)}
-                    isActive={field.value}
-                    label="Даю согласие на обработку персональных данных"
-                  />
-                )}
-              />
-              <Button type="submit" size="s">
-                Отправить заявку
-              </Button>
-            </div>
           )}
         </form>
       )}
