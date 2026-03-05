@@ -10,7 +10,6 @@ import {
 } from '@/Api/private/visit';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Loader } from '@/Components/UI/Loader';
-import { getPrettyDate } from '@/Utils/date';
 import { USER_VISIT_STATUS, UB_VISIT_STATUS } from '@/Components/Pages/Visits/const';
 import { Button } from '@/Components/UI/Button';
 import { toast } from 'react-toastify';
@@ -20,6 +19,7 @@ import { getMe as privateGetMe } from '@/Api/private/auth';
 import { VisitStatus } from '@/Models/Visit/client';
 import { Enter } from '@/Components/Pages/Enter';
 import { resetFormFromStorage } from '@/Components/Pages/Enter/utils';
+import { format } from 'date-fns';
 
 interface VisitRequestProps {
   isPublic: boolean;
@@ -63,7 +63,6 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
   });
 
   const isVisibleButtons = (status: VisitStatus) => {
-    console.log(status, me?.role);
     return (status === 'not_processed' && me?.role === 'user') || (status === 'user_accept' && me?.role === 'security');
   };
 
@@ -75,8 +74,6 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
     return <h2>Ошибка при получении данных</h2>;
   }
 
-  console.log(visit);
-
   return (
     <>
       <div className={styles.visitRequest}>
@@ -85,12 +82,19 @@ function VisitRequestComponent({ isPublic }: VisitRequestProps): JSX.Element {
             <h2>Детали визита</h2>
             <Input
               disabled
-              label="Время посещения"
+              label="ФИО посетителя"
               onChange={() => {}}
               type="text"
-              value={getPrettyDate(visit.form.visitTime)}
+              value={visit.form.passportFullName}
             />
-            <Input disabled label="Причина" onChange={() => {}} type="text" value={visit.form.visitReason} />
+            <Input
+              disabled
+              label="Дата и время посещения"
+              onChange={() => {}}
+              type="text"
+              value={format(visit.form.visitTime, 'dd.mm.yyyy HH:mm')}
+            />
+            <Input disabled label="Причина посещения" onChange={() => {}} type="text" value={visit.form.visitReason} />
             <Input
               disabled
               label="Статус"
